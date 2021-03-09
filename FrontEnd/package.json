@@ -23,8 +23,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint",
-    "lint:write": "eslint --fix",
-    "lint:all": "yarn lint:write ."
+    "lint:write": "eslint src --fix"
   },
   "eslintConfig": {
     "extends": [
