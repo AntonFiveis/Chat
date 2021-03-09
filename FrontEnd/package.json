@@ -11,11 +11,20 @@
     "react-scripts": "4.0.3",
     "web-vitals": "^1.1.0"
   },
+  "lint-staged": {
+    "*.(js|jsx)": [
+      "yarn lint:write",
+      "git add"
+    ]
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint",
+    "lint:write": "eslint --fix",
+    "lint:all": "yarn lint:write ."
   },
   "eslintConfig": {
     "extends": [
