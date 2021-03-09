@@ -6,7 +6,9 @@
       "FrontEnd",
       "chat-back"
     ],
-    "nohoist": ["husky"]
+    "nohoist": [
+      "husky"
+    ]
   },
   "repository": {
     "type": "git",
