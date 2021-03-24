@@ -6,7 +6,8 @@ module.exports = {
     "extends": [
         "eslint:recommended",
         "plugin:react/recommended",
-        "plugin:sonarjs/recommended"
+        "plugin:sonarjs/recommended",
+        "plugin:prettier/recommended"
     ],
     "parserOptions": {
         "ecmaFeatures": {
@@ -17,7 +18,7 @@ module.exports = {
     },
     "plugins": [
         "react",
-        "sonarjs"
+        "sonarjs",
     ],
     "rules": {
     },
