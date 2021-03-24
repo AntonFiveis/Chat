@@ -20,5 +20,6 @@ module.exports = {
         "sonarjs"
     ],
     "rules": {
-    }
+    },
+    "ignorePatterns": [".eslintrc.js"]
 };
