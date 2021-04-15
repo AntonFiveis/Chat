@@ -1,0 +1,61 @@
+{
+  "name": "chat",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "FrontEnd",
+      "chat-back"
+    ],
+    "nohoist": [
+      "husky"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AntonFiveis/Chat.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AntonFiveis/Chat/issues"
+  },
+  "homepage": "https://github.com/AntonFiveis/Chat#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.17.0",
+    "@typescript-eslint/parser": "^4.17.0",
+    "eslint": "^7.22.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-sonarjs": "^0.6.0",
+    "husky": "=4",
+    "lint-staged": "^10.5.4",
+    "prettier": "^2.2.1",
+    "typescript": "^4.2.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint-staged",
+      "pre-push": "yarn lint-staged"
+    }
+  },
+  "lint-staged": {
+    "chat-back/**/*.{ts,tsx}": [
+      "yarn lint:server",
+      "git add"
+    ],
+    "FrontEnd/**/*.{js,jsx}": [
+      "yarn lint:client",
+      "git add"
+    ]
+  },
+  "scripts": {
+    "lint:server": "yarn --cwd ./chat-back lint:write",
+    "lint:client": "yarn --cwd ./FrontEnd lint:write",
+    "lint:all": "yarn lint:server . && yarn lint:client .",
+    "start:client": "cd FrontEnd && yarn start",
+    "start:server": "cd FrontEnd && yarn start:dev"
+  },
+  "dependencies": {
+  }
+}
