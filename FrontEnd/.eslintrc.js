@@ -1,7 +1,9 @@
 module.exports = {
     "env": {
-        "es2021": true,
+        "node": true,
         "browser": true,
+        "es6": true,
+        "commonjs": true
     },
     "extends": [
         "eslint:recommended",
@@ -23,5 +25,5 @@ module.exports = {
     "rules": {
         "react/prop-types": "off"
     },
-    "ignorePatterns": [".eslintrc.js"]
+    "ignorePatterns": [".eslintrc.js", "webpack.config.js", "scripts"]
 };
