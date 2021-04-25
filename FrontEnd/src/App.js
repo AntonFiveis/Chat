@@ -1,28 +1,21 @@
-import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Home from './components/home.component';
-import Nav from './components/nav.component';
-import Login from './components/login.component';
-import Register from './components/register.component';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import React, { Component } from 'react';
+import { Route } from 'react-router-dom';
 
-function App() {
-  return (
-    <BrowserRouter>
-      <div className="App">
-        <Nav />
-        <div className="auth-wrapper">
-          <div className="auth-inner">
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <Route exact path="/login" component={Login} />
-              <Route exact path="/register" component={Register} />
-            </Switch>
-          </div>
-        </div>
+import { Auth, Home } from './pages';
+
+class App extends Component {
+  render() {
+    return (
+      <div className="wrapper">
+        <Route
+          exact
+          path={['/', '/login', '/register']}
+          component={Auth}
+        ></Route>
+        <Route exact path="/im" component={Home}></Route>
       </div>
-    </BrowserRouter>
-  );
+    );
+  }
 }
 
 export default App;
