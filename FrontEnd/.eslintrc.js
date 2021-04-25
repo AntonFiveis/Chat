@@ -21,6 +21,7 @@ module.exports = {
         "sonarjs",
     ],
     "rules": {
+        "react/prop-types": "off"
     },
     "ignorePatterns": [".eslintrc.js"]
 };
