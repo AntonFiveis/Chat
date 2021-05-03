@@ -25,5 +25,5 @@ module.exports = {
     "rules": {
         "react/prop-types": "off"
     },
-    "ignorePatterns": [".eslintrc.js", "webpack.config.js", "scripts"]
+    "ignorePatterns": [".eslintrc.js"]
 };

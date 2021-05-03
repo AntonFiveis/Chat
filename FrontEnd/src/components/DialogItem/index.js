@@ -1,40 +1,34 @@
 import React from 'react';
 import classNames from 'classnames';
-import { IconReaded } from '../';
-
+import { IconReaded, Avatar } from '../';
+import { format, isToday } from 'date-fns';
 import './DialogItem.scss';
 
-const getAvatar = (avatar) => {
-  if (avatar) {
-    return <img src={avatar} alt="avatar" />;
+const getMessageTime = (createdAt) => {
+  if (isToday(new Date(createdAt))) {
+    return format(new Date(createdAt), 'HH:mm');
   } else {
-    //make avatar
+    return format(new Date(createdAt), 'dd.MM.yyyy');
   }
 };
 
-const DialogItem = ({ user, unread }) => (
+const DialogItem = ({ user, created_at, text, unread, isMe }) => (
   <div
     className={classNames('dialogs__item', {
       'dialogs__item--online': user.isOnline,
     })}
   >
     <div className="dialogs__item-avatar">
-      {/* <img src={user.avatar} alt={`${user.fullname} avatar`} /> */}
-      {getAvatar('https://avatars.githubusercontent.com/u/77641899?v=4')}
+      <Avatar user={user} />
     </div>
     <div className="dialogs__item-info">
       <div className="dialogs__item-info-top">
         <b>{user.fullname}</b>
-        <span>
-          {/* <Time date={new Date()} /> */}
-          13:03
-        </span>
+        <span>{getMessageTime(created_at)}</span>
       </div>
       <div className="dialogs__item-info-bottom">
-        <p>
-          Мы все свидетельствуем aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ...
-        </p>
-        <IconReaded isMe={true} isReaded={true} />
+        <p>{text}</p>
+        {isMe && <IconReaded isMe={true} isReaded={true} />}
         {unread > 0 && (
           <div className="dialogs__item-info-bottom-count">
             {unread > 9 ? '+9' : unread}
