@@ -1,36 +1,53 @@
 import React from 'react';
+import {
+  TeamOutlined,
+  FormOutlined,
+  EllipsisOutlined,
+} from '@ant-design/icons';
 
-import Message from '../../components/Message';
+import { Button } from 'antd';
+import { ChatInput, Messages, Status } from '../../components';
+import { Dialogs } from '../../containers';
 
 import './Home.scss';
+
+import dialogsJSON from '../../dialogs.json';
 
 const Home = () => {
   return (
     <section className="home">
-      <Message
-        avatar="https://avatars.githubusercontent.com/u/77641899?v=4"
-        text="hello! What's up?"
-        date="Sun Apr 21 2019 21:30:07"
-        isMe={false}
-      />
-      <Message
-        avatar="https://avatars.githubusercontent.com/u/77641899?v=4"
-        text="hello!"
-        date="Sun Apr 21 2019 21:35:07"
-        isMe={true}
-      />
-      <Message
-        avatar="https://avatars.githubusercontent.com/u/77641899?v=4"
-        text="hello!"
-        date="Sun Apr 21 2019 21:35:07"
-        isMe={false}
-      />
-      <Message
-        avatar="https://avatars.githubusercontent.com/u/77641899?v=4"
-        text="hello!"
-        date="Sun Apr 21 2019 21:35:07"
-        isMe={true}
-      />
+      <div className="chat">
+        <div className="chat__sidebar">
+          <div className="chat__sidebar-header">
+            <div>
+              <Button type="link" shape="circle" icon={<TeamOutlined />} />
+              <span>Список диалогов</span>
+            </div>
+            <Button type="link" shape="circle" icon={<FormOutlined />} />
+          </div>
+          <div className="chat__sidebar-dialogs">
+            <Dialogs userId={5} items={dialogsJSON} />
+          </div>
+        </div>
+        <div className="chat__dialog">
+          <div className="chat__dialog-header">
+            <div />
+            <div className="chat__dialog-header-center">
+              <b className="chat__dialog-header-username">Гай Юлий Цезарь</b>
+              <div className="chat__dialog-header-status">
+                <Status online />
+              </div>
+            </div>
+            <Button type="link" shape="circle" icon={<EllipsisOutlined />} />
+          </div>
+          <div className="chat__dialog-messages">
+            <Messages />
+          </div>
+          <div className="chat__dialog-input">
+            <ChatInput />
+          </div>
+        </div>
+      </div>
     </section>
   );
 };

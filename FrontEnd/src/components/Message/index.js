@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import formatDistanceToNow from 'date-fns/formatDistanceToNow';
-import ruLocale from 'date-fns/locale/ru';
 import classNames from 'classnames';
+
+import { Time } from '../';
 
 import './Message.scss';
 
@@ -17,12 +17,7 @@ const Message = ({ avatar, user, text, date, isMe }) => {
           <div className="message__bubble">
             <p className="message__text">{text}</p>
           </div>
-          <span className="message__date">
-            {formatDistanceToNow(new Date(date), {
-              addSuffix: true,
-              locale: ruLocale,
-            })}
-          </span>
+          <span className="message__date">{<Time date={date} />}</span>
         </div>
       </div>
     </div>
