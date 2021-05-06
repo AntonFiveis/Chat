@@ -1,20 +1,20 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PgService } from '../pg/pg.service';
 import { v4 as uuid } from 'uuid';
-import * as jwt from 'jsonwebtoken';
+import {JwtService} from "@nestjs/jwt";
 import { TokensPair } from './interfaces/tokens-pair';
 import { UsersService } from '../users/users.service';
 import { AuthCredentialsDTO } from './interfaces/auth-credentials-dto';
 import { UsersDTO } from '../users/interfaces/users-dto';
 import { Users } from '../users/interfaces/users.entity';
 import * as bcrypt from 'bcrypt';
-import { TokensDTO } from '../../../dist/modules/auth/dto/tokens-dto';
 import { RefreshTokenEntity } from './interfaces/refresh-token-entity';
 @Injectable()
 export class AuthService {
   constructor(
     private pgService: PgService,
     private usersService: UsersService,
+    private jwtService: JwtService,
   ) {}
 
   private tableName = 'RefreshTokens';
@@ -52,9 +52,7 @@ export class AuthService {
   }
 
   generateAccessToken(userID: string): string {
-    return jwt.sign({ userID }, process.env.JWT_SECRET as string, {
-      expiresIn: '1h',
-    });
+    return this.jwtService.sign({ userID });
   }
 
   async login(

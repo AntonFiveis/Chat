@@ -5,3 +5,9 @@ export interface UsersDTO {
   email: string;
   password: string;
 }
+
+export interface UsersUpdates {
+  name?: string;
+  nickname?: string;
+  phone?: string;
+}
