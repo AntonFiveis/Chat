@@ -11,7 +11,7 @@ import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDTO } from './interfaces/auth-credentials-dto';
 import { TokensPair } from './interfaces/tokens-pair';
-import { UsersDTO } from '../users/interfaces/users-dto';
+import { UsersDto } from '../users/interfaces/users.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -28,7 +28,7 @@ export class AuthController {
   }
   @Post('signup')
   async signUp(
-    @Body('user') userDTO: UsersDTO,
+    @Body('user') userDTO: UsersDto,
     @Body('fingerprint') fingerprint: string,
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {

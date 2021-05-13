@@ -2,20 +2,26 @@ import { Injectable } from '@nestjs/common';
 import { PgService } from '../pg/pg.service';
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
-import { UsersDTO, UsersUpdates } from './interfaces/users-dto';
+import { UsersDto, UsersUpdates } from './interfaces/users.dto';
 import { Users } from './interfaces/users.entity';
+import { UsersOutputDTO } from './interfaces/users.output.dto';
 @Injectable()
 export class UsersService {
   constructor(private pgService: PgService) {}
   private tableName = 'Users';
-
+  async findOneByEmail(email: string): Promise<Users> {
+    return await this.pgService.findOne({
+      tableName: this.tableName,
+      where: { email },
+    });
+  }
   async findOneByID(userID: string): Promise<Users> {
     return await this.pgService.findOne({
       tableName: this.tableName,
       where: { userID },
     });
   }
-  async createNewUser(userDTO: UsersDTO): Promise<string> {
+  async createNewUser(userDTO: UsersDto): Promise<string> {
     const salt = bcrypt.genSaltSync();
     const password = bcrypt.hashSync(userDTO.password, salt);
     return (
@@ -25,13 +31,6 @@ export class UsersService {
         returning: 'userID',
       })
     ).rows[0].userID;
-  }
-
-  async findOneByEmail(email: string): Promise<Users> {
-    return this.pgService.findOne({
-      tableName: this.tableName,
-      where: { email },
-    });
   }
 
   async deleteUser(userID: string): Promise<void> {

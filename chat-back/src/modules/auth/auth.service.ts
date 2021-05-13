@@ -5,7 +5,7 @@ import {JwtService} from "@nestjs/jwt";
 import { TokensPair } from './interfaces/tokens-pair';
 import { UsersService } from '../users/users.service';
 import { AuthCredentialsDTO } from './interfaces/auth-credentials-dto';
-import { UsersDTO } from '../users/interfaces/users-dto';
+import { UsersDto } from '../users/interfaces/users.dto';
 import { Users } from '../users/interfaces/users.entity';
 import * as bcrypt from 'bcrypt';
 import { RefreshTokenEntity } from './interfaces/refresh-token-entity';
@@ -19,7 +19,7 @@ export class AuthService {
 
   private tableName = 'RefreshTokens';
 
-  async signUp(userDTO: UsersDTO, fingerprint: string): Promise<TokensPair> {
+  async signUp(userDTO: UsersDto, fingerprint: string): Promise<TokensPair> {
     const userID = await this.usersService.createNewUser(userDTO);
     return await this.createTokenPair(userID, fingerprint);
   }
