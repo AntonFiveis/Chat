@@ -6,7 +6,6 @@ import {
   SelectParams,
   UpdateParams,
 } from './interfaces/queryParams.interface';
-
 @Injectable()
 export class PgService {
   private pool: Pool = new Pool();

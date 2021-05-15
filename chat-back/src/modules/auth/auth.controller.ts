@@ -3,15 +3,15 @@ import {
   Controller,
   Delete,
   Post,
-  Query,
   Req,
   Res,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDTO } from './interfaces/auth-credentials-dto';
 import { TokensPair } from './interfaces/tokens-pair';
-import { UsersDTO } from '../users/interfaces/users-dto';
+import { UsersDto } from '../users/interfaces/users.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -21,16 +21,16 @@ export class AuthController {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       maxAge: 5.184e9,
-      path: '/auth',
+      path: '/api/auth',
       secure: true,
     });
     res.send({ accessToken });
   }
   @Post('signup')
   async signUp(
-    @Body('user') userDTO: UsersDTO,
+    @Body('user') userDTO: UsersDto,
     @Body('fingerprint') fingerprint: string,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
     const { accessToken, refreshToken } = await this.authService.signUp(
       userDTO,
@@ -43,7 +43,7 @@ export class AuthController {
   async login(
     @Body('authCredentials') { email, password }: AuthCredentialsDTO,
     @Body('fingerprint') fingerprint: string,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
     const { accessToken, refreshToken } = await this.authService.login(
       { email, password },
@@ -66,6 +66,7 @@ export class AuthController {
     @Body('fingerprint') fingerprint: string,
     @Res() res: Response,
   ): Promise<void> {
+    if (!request.cookies['refreshToken']) throw new UnauthorizedException();
     const {
       accessToken,
       refreshToken,
