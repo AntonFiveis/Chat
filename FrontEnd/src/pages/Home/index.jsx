@@ -6,12 +6,10 @@ import {
 } from '@ant-design/icons';
 
 import { Button } from 'antd';
-import { ChatInput, Messages, Status } from '../../components';
-import { Dialogs } from '../../containers';
+import { ChatInput, Status } from '../../components';
+import { Dialogs, Messages } from '../../containers';
 
 import './Home.scss';
-
-import dialogsJSON from '../../dialogs.json';
 
 const Home = () => {
   return (
@@ -26,7 +24,7 @@ const Home = () => {
             <Button type="link" shape="circle" icon={<FormOutlined />} />
           </div>
           <div className="chat__sidebar-dialogs">
-            <Dialogs userId={5} items={dialogsJSON} />
+            <Dialogs userId={5} />
           </div>
         </div>
         <div className="chat__dialog">
