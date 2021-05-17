@@ -1,87 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Empty } from 'antd';
+import { Empty, Spin } from 'antd';
+import classNames from 'classnames';
 
 import { Message } from '../';
 
-const Messages = ({ items }) => {
-  return items ? (
-    <div>
-      <Message
-        avatar="https://avatars.githubusercontent.com/u/77641899?v=4"
-        text="hello! What's up?"
-        date="Sun Apr 21 2019 21:30:07"
-        isMe={false}
-      />
-      <Message
-        avatar="https://avatars.githubusercontent.com/u/77641899?v=4"
-        text="hello!"
-        date="Sun Apr 21 2019 21:35:07"
-        isMe={true}
-      />
-      <Message
-        avatar="https://avatars.githubusercontent.com/u/77641899?v=4"
-        text="hello!"
-        date="Sun Apr 21 2019 21:35:07"
-        isMe={false}
-      />
-      <Message
-        avatar="https://avatars.githubusercontent.com/u/77641899?v=4"
-        text="hello!"
-        date="Sun Apr 21 2019 21:35:07"
-        isMe={true}
-      />
-      <Message
-        avatar="https://avatars.githubusercontent.com/u/77641899?v=4"
-        text="hello! What's up?"
-        date="Sun Apr 21 2019 21:30:07"
-        isMe={false}
-      />
-      <Message
-        avatar="https://avatars.githubusercontent.com/u/77641899?v=4"
-        text="hello!"
-        date="Sun Apr 21 2019 21:35:07"
-        isMe={true}
-      />
-      <Message
-        avatar="https://avatars.githubusercontent.com/u/77641899?v=4"
-        text="hello!"
-        date="Sun Apr 21 2019 21:35:07"
-        isMe={false}
-      />
-      <Message
-        avatar="https://avatars.githubusercontent.com/u/77641899?v=4"
-        text="hello!"
-        date="Sun Apr 21 2019 21:35:07"
-        isMe={true}
-      />
-      <Message
-        avatar="https://avatars.githubusercontent.com/u/77641899?v=4"
-        text="hello! What's up?"
-        date="Sun Apr 21 2019 21:30:07"
-        isMe={false}
-      />
-      <Message
-        avatar="https://avatars.githubusercontent.com/u/77641899?v=4"
-        text="hello!"
-        date="Sun Apr 21 2019 21:35:07"
-        isMe={true}
-      />
-      <Message
-        avatar="https://avatars.githubusercontent.com/u/77641899?v=4"
-        text="hello!"
-        date="Sun Apr 21 2019 21:35:07"
-        isMe={false}
-      />
-      <Message
-        avatar="https://avatars.githubusercontent.com/u/77641899?v=4"
-        text="hello!"
-        date="Sun Apr 21 2019 21:35:07"
-        isMe={true}
-      />
+import './Messages.scss';
+
+const Messages = ({ blockRef, isLoading, items }) => {
+  return (
+    <div
+      ref={blockRef}
+      className={classNames('messages', { 'messages--loading': isLoading })}
+    >
+      {isLoading ? (
+        <Spin size="large" tip="Загрузка сообщений..."></Spin>
+      ) : items && !isLoading ? (
+        items.length > 0 ? (
+          items.map((item) => <Message key={item.id} {...item} />)
+        ) : (
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description="Нет сообщений"
+          />
+        )
+      ) : (
+        <Empty
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          description="Откройте диалог"
+        />
+      )}
     </div>
-  ) : (
-    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Нет сообщений" />
   );
 };
 

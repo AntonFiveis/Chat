@@ -6,7 +6,16 @@ import { Block, Button } from '../../../components';
 import { validateField } from '../../../utils/helpers';
 
 const LoginForm = (props) => {
-  const { touched, errors, handleChange, handleBlur, handleSubmit } = props;
+  const {
+    values,
+    touched,
+    errors,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    isValid,
+    isSubmitting,
+  } = props;
   return (
     <div>
       <div className="auth__top">
@@ -29,6 +38,7 @@ const LoginForm = (props) => {
               id="email"
               prefix={<MailOutlined className="site-form-item-icon" />}
               placeholder="Е-Mail"
+              value={values.email}
               size="large"
               onChange={handleChange}
               onBlur={handleBlur}
@@ -45,13 +55,20 @@ const LoginForm = (props) => {
               prefix={<LockOutlined className="site-form-item-icon" />}
               type="password"
               placeholder="Пароль"
+              value={values.password}
               size="large"
               onChange={handleChange}
               onBlur={handleBlur}
             />
           </Form.Item>
           <Form.Item>
-            <Button onClick={handleSubmit} type="primary" size="large">
+            {isSubmitting && !isValid && <span>Ошибка!</span>}
+            <Button
+              disabled={isSubmitting}
+              onClick={handleSubmit}
+              type="primary"
+              size="large"
+            >
               Войти в аккаунт
             </Button>
           </Form.Item>

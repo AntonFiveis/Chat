@@ -29,6 +29,14 @@
     display: flex;
     margin-bottom: 20px;
 
+    &:hover {
+      background-color: #f3f7ff;
+    }
+
+    &--selected, &--selected:hover {
+      background-color: #1890ff;
+    }
+
     &-avatar {
       position: relative;
       flex: 0 0 40px;

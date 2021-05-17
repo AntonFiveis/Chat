@@ -40,11 +40,6 @@
                     padding: 10px 20px;
                     margin-bottom: 0;
                     cursor: pointer;
-
-                    &.active,
-                    &:hover {
-                        background-color: #f3f7ff;
-                    }
                 }
             }
         }
@@ -87,9 +82,6 @@
         }
 
         &-messages {
-            padding: 20px;
-            padding-bottom: 0;
-            overflow: auto;
             height: calc(100% - 138px);
         }
     }
