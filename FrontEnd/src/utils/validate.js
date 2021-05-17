@@ -11,8 +11,11 @@ const validate = ({ isAuth, values, errors }) => {
     password: (value) => {
       if (!value) {
         errors.password = 'Введите пароль';
-      } else if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$/i.test(value)) {
-        errors.password = isAuth ? 'Неверный пароль' : 'Слишком лёгкий пароль!';
+      } else if (
+        !isAuth &&
+        !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$/i.test(value)
+      ) {
+        errors.password = 'Слишком лёгкий пароль!';
       }
     },
 
