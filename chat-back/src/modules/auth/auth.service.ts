@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PgService } from '../pg/pg.service';
 import { v4 as uuid } from 'uuid';
-import {JwtService} from "@nestjs/jwt";
+import { JwtService } from '@nestjs/jwt';
 import { TokensPair } from './interfaces/tokens-pair';
 import { UsersService } from '../users/users.service';
 import { AuthCredentialsDTO } from './interfaces/auth-credentials-dto';

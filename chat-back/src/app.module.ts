@@ -5,9 +5,17 @@ import { PgModule } from './modules/pg/pg.module';
 import { UsersContactsModule } from './modules/users-contacts/users-contacts.module';
 import { ChatsModule } from './modules/chats/chats.module';
 import { ChatMembersModule } from './modules/chat-members/chat-members.module';
-
+import { WsSessionsModule } from './modules/ws-sessions/ws-sessions.module';
 @Module({
-  imports: [AuthModule, UsersModule, PgModule, UsersContactsModule, ChatsModule, ChatMembersModule],
+  imports: [
+    AuthModule,
+    UsersModule,
+    PgModule,
+    UsersContactsModule,
+    ChatsModule,
+    ChatMembersModule,
+    WsSessionsModule,
+  ],
   controllers: [],
   providers: [],
 })

@@ -29,7 +29,5 @@ export class ChatsService {
       cascade: true,
     });
   }
-  async updateChatPhoto(chatID: string, photo: File): Promise<void> {
-
-  }
+  async updateChatPhoto(chatID: string, photo: File): Promise<void> {}
 }
