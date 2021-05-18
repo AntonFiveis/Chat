@@ -10,7 +10,7 @@ export class UsersContactsService {
   async addFriend(usersContactsDTO: UsersContactsDTO): Promise<void> {
     await this.pgService.create({
       tableName: this.tableName,
-      values: [usersContactsDTO],
+      values: [{ ...usersContactsDTO, contactID: uuid() }],
     });
   }
 

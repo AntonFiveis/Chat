@@ -28,7 +28,7 @@ export class WsSessionsService {
   findSession(socket: WebSocket): WsSession | undefined {
     return this.connectedClients.find((cc) => cc.socket == socket);
   }
-  findSessionsByUserID(userID: string): WsSession[] | undefined[] {
+  findSessionsByUserID(userID: string): WsSession[] {
     return this.connectedClients.filter((cc) => cc.userID == userID);
   }
 }

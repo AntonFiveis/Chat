@@ -4,7 +4,6 @@ import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 import { UsersDto, UsersUpdates } from './interfaces/users.dto';
 import { Users } from './interfaces/users.entity';
-import { UsersOutputDTO } from './interfaces/users.output.dto';
 @Injectable()
 export class UsersService {
   constructor(private pgService: PgService) {}

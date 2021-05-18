@@ -3,7 +3,7 @@ import {
   MessageMappingProperties,
 } from '@nestjs/websockets';
 import * as ws from 'ws';
-import { INestApplicationContext, WsMessageHandler } from '@nestjs/common';
+import { INestApplicationContext } from '@nestjs/common';
 import { EMPTY, fromEvent, Observable } from 'rxjs';
 import { filter, map, mergeMap } from 'rxjs/operators';
 import {

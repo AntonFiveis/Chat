@@ -3,4 +3,5 @@ export default interface Chats {
   isGroup: boolean;
   photo: string;
   chatName: string;
+  ownerID: string;
 }

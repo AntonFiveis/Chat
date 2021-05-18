@@ -6,6 +6,7 @@ import { UsersContactsModule } from './modules/users-contacts/users-contacts.mod
 import { ChatsModule } from './modules/chats/chats.module';
 import { ChatMembersModule } from './modules/chat-members/chat-members.module';
 import { WsSessionsModule } from './modules/ws-sessions/ws-sessions.module';
+import { MessagesModule } from './modules/messages/messages.module';
 @Module({
   imports: [
     AuthModule,
@@ -15,6 +16,7 @@ import { WsSessionsModule } from './modules/ws-sessions/ws-sessions.module';
     ChatsModule,
     ChatMembersModule,
     WsSessionsModule,
+    MessagesModule,
   ],
   controllers: [],
   providers: [],

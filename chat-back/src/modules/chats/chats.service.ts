@@ -1,10 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { PgService } from '../pg/pg.service';
 import { ChatsDTO, ChatsUpdates } from './interfaces/chats.dto';
+import Chats from './interfaces/chats.entity';
+import { MessagesService } from '../messages/messages.service';
+import { ChatsWithMessages } from './interfaces/chats.output.dto';
 
 @Injectable()
 export class ChatsService {
-  constructor(private pgService: PgService) {}
+  constructor(
+    private pgService: PgService,
+    private messagesService: MessagesService,
+  ) {}
   private tableName = 'Chats';
 
   async createChat(chatDTO: ChatsDTO): Promise<string> {
@@ -29,5 +35,14 @@ export class ChatsService {
       cascade: true,
     });
   }
-  async updateChatPhoto(chatID: string, photo: File): Promise<void> {}
+  // async updateChatPhoto(chatID: string, photo: File): Promise<void> {}
+
+  async getChatWithMessages(chatID: string): Promise<ChatsWithMessages> {
+    const chat: Chats = await this.pgService.findOne({
+      tableName: this.tableName,
+      where: { chatID },
+    });
+    const messages = await this.messagesService.getLast50messages(chatID);
+    return { ...chat, messages };
+  }
 }

@@ -24,6 +24,12 @@ export interface JsonRpcNotification extends JsonRpcAbstractRequest {
   params: unknown;
 }
 
+export interface NotificationPayload {
+  ok: boolean;
+  code?: number;
+  message?: string;
+}
+
 export enum JsonRpcErrorCodes {
   PARSE_ERROR = -32700,
   INVALID_REQUEST = -32600,
