@@ -24,6 +24,12 @@ export class AuthController {
       path: '/api/auth',
       secure: true,
     });
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      maxAge: 5.184e9,
+      path: '/api',
+      secure: true,
+    });
     res.send({ accessToken });
   }
   @Post('signup')
