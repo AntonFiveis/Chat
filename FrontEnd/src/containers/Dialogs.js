@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import { dialogsActions } from '../redux/actions';
+import socket from '../core/socket';
+
 import { Dialogs as BaseDialogs } from '../components';
 
 const Dialogs = ({
@@ -31,6 +33,10 @@ const Dialogs = ({
     } else {
       setFiltredItems(items);
     }
+    // eslint-disable-next-line no-unused-vars
+    socket.on('SERVER:DIALOG_CREATED', (data) => {
+      fetchDialogs();
+    });
   }, [items]);
 
   return (

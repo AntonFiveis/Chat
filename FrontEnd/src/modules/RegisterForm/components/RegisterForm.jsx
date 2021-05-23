@@ -1,12 +1,24 @@
 import React from 'react';
 import { Form, Input } from 'antd';
-import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
+import {
+  UserOutlined,
+  LockOutlined,
+  MailOutlined,
+  PhoneOutlined,
+} from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { Block, Button } from '../../../components';
 import { validateField } from '../../../utils/helpers';
 
 const RegisterForm = (props) => {
-  const { touched, errors, handleChange, handleBlur, handleSubmit } = props;
+  const {
+    touched,
+    errors,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    isSubmitting,
+  } = props;
   return (
     <div>
       <div className="auth__top">
@@ -39,7 +51,37 @@ const RegisterForm = (props) => {
             <Input
               id="username"
               prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="Имя"
+              placeholder="Имя пользователя"
+              size="large"
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+          </Form.Item>
+          <Form.Item
+            name="userfullname"
+            validateStatus={validateField('userfullname', touched, errors)}
+            help={!touched.userfullname ? '' : errors.userfullname}
+            hasFeedback
+          >
+            <Input
+              id="userfullname"
+              prefix={<UserOutlined className="site-form-item-icon" />}
+              placeholder="Ваше имя"
+              size="large"
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+          </Form.Item>
+          <Form.Item
+            name="phone"
+            validateStatus={validateField('phone', touched, errors)}
+            help={!touched.phone ? '' : errors.phone}
+            hasFeedback
+          >
+            <Input
+              id="phone"
+              prefix={<PhoneOutlined className="site-form-item-icon" />}
+              placeholder="Ваш телефон"
               size="large"
               onChange={handleChange}
               onBlur={handleBlur}
@@ -78,7 +120,12 @@ const RegisterForm = (props) => {
             />
           </Form.Item>
           <Form.Item>
-            <Button onClick={handleSubmit} type="primary" size="large">
+            <Button
+              disabled={isSubmitting}
+              onClick={handleSubmit}
+              type="primary"
+              size="large"
+            >
               Зарегистрироваться
             </Button>
           </Form.Item>
