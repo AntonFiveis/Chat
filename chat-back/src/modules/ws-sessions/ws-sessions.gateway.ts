@@ -60,13 +60,11 @@ export class WsSessionsGateway
         const sessions: WsSession[] = this.wsSessionsService.findSessionsByUserID(
           cm.userID,
         );
-        sessions.forEach((s) => {
-          const message = generateJsonRpcNotification('ADD_MESSAGE', {
-            ...messagesDTO,
-            date,
-          });
-          s.socket.send(JSON.stringify(message));
-        });
+        this.wsSessionsService.sendResponse(
+          sessions,
+          { ...messagesDTO, date },
+          'ADD_MESSAGE',
+        );
       });
       return { ok: true };
     } catch (e) {
@@ -90,13 +88,11 @@ export class WsSessionsGateway
         const userSessions: WsSession[] = this.wsSessionsService.findSessionsByUserID(
           user,
         );
-        userSessions.forEach((s) => {
-          const message = generateJsonRpcNotification('ADD_CHAT', {
-            ...chatDTO,
-            chatID,
-          });
-          s.socket.send(message);
-        });
+        this.wsSessionsService.sendResponse(
+          userSessions,
+          { ...chatDTO, chatID },
+          'ADD_CHAT',
+        );
       }
       return { ok: true };
     } catch (e) {
@@ -123,13 +119,11 @@ export class WsSessionsGateway
       const chatWithMessages = this.chatsService.getChatWithMessages(
         chatMembersDTO.chatID,
       );
-      newChatMemberSessions.forEach((session): void => {
-        const message = generateJsonRpcNotification(
-          'ADD_CHAT_MEMBER',
-          chatWithMessages,
-        );
-        session.socket.send(JSON.stringify(message));
-      });
+      this.wsSessionsService.sendResponse(
+        newChatMemberSessions,
+        chatWithMessages,
+        'ADD_CHAT_MEMBER',
+      );
       return { ok: true };
     } catch (e) {
       return invalidTokenError;
@@ -152,12 +146,12 @@ export class WsSessionsGateway
         chatMembersDTO.userID,
       );
       if (!chatMemberSessions) return { ok: true };
-      chatMemberSessions.forEach((s): void => {
-        const message = generateJsonRpcNotification('REMOVE_CHAT_MEMBER', {
-          chatID: chatMembersDTO.chatID,
-        });
-        s.socket.send(JSON.stringify(message));
-      });
+      this.wsSessionsService.sendResponse(
+        chatMemberSessions,
+        { chatID: chatMembersDTO.chatID },
+        'REMOVE_CHAT_MEMBER',
+      );
+
       return { ok: true };
     } catch (e) {
       return invalidTokenError;

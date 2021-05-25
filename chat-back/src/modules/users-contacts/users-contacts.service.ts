@@ -8,10 +8,11 @@ export class UsersContactsService {
   constructor(private pgService: PgService) {}
   private tableName = 'UsersContacts';
   async addFriend(usersContactsDTO: UsersContactsDTO): Promise<void> {
-    await this.pgService.create({
-      tableName: this.tableName,
-      values: [{ ...usersContactsDTO, contactID: uuid() }],
-    });
+    if (await this.checkIsFriend(usersContactsDTO))
+      await this.pgService.create({
+        tableName: this.tableName,
+        values: [{ ...usersContactsDTO, contactID: uuid() }],
+      });
   }
 
   async getFriendList(userID: string): Promise<UsersContacts[]> {

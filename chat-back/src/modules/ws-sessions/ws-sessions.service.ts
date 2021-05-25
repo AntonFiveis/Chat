@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import WsSession, { WsSessionsUpdates } from './interfaces/ws-sessions.entity';
 import WebSocket from 'ws';
+import { generateJsonRpcNotification } from '../../helpers/json-rpc.utils';
 
 @Injectable()
 export class WsSessionsService {
@@ -19,6 +20,17 @@ export class WsSessionsService {
       ...this.connectedClients[index],
       ...updates,
     };
+  }
+
+  sendResponse(
+    wsSessions: WsSession[],
+    params: unknown,
+    notification: string,
+  ): void {
+    wsSessions.forEach((s): void => {
+      const message = generateJsonRpcNotification(notification, params);
+      s.socket.send(JSON.stringify(message));
+    });
   }
 
   getAllSessions(): WsSession[] {

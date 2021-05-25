@@ -32,6 +32,7 @@ export class AuthController {
     });
     res.send({ accessToken });
   }
+
   @Post('signup')
   async signUp(
     @Body('user') userDTO: UsersDto,

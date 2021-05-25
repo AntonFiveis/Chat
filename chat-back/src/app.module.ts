@@ -7,6 +7,7 @@ import { ChatsModule } from './modules/chats/chats.module';
 import { ChatMembersModule } from './modules/chat-members/chat-members.module';
 import { WsSessionsModule } from './modules/ws-sessions/ws-sessions.module';
 import { MessagesModule } from './modules/messages/messages.module';
+import { ImageMinModule } from './modules/image-min/image-min.module';
 @Module({
   imports: [
     AuthModule,
@@ -17,6 +18,7 @@ import { MessagesModule } from './modules/messages/messages.module';
     ChatMembersModule,
     WsSessionsModule,
     MessagesModule,
+    ImageMinModule,
   ],
   controllers: [],
   providers: [],

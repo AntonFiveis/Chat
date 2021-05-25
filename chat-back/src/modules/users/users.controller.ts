@@ -46,4 +46,22 @@ export class UsersController {
     } = await this.usersService.findOneByEmail(email);
     return result;
   }
+  @Get('/phone')
+  async getUserByPhone(@Query('phone') phone: string): Promise<UsersOutputDTO> {
+    const {
+      password,
+      salt,
+      ...result
+    } = await this.usersService.findOneByPhone(phone);
+    return result;
+  }
+  @Get('/nickname')
+  async getUserByNickname(@Query('nickname') nickname: string): Promise<UsersOutputDTO> {
+    const {
+      password,
+      salt,
+      ...result
+    } = await this.usersService.findOneByNickname(nickname);
+    return result;
+  }
 }

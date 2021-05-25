@@ -5,10 +5,12 @@ import {
   UseGuards,
   Request,
   Delete,
+  Get,
 } from '@nestjs/common';
 import { UsersContactsService } from './users-contacts.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { JwtValidationOutput } from '../auth/jwt.strategy';
+import UsersContacts from './interfaces/users-contacts.entity';
 
 @UseGuards(JwtAuthGuard)
 @Controller('users-contacts')
@@ -35,5 +37,12 @@ export class UsersContactsController {
       userID: user.userID,
       friendUserID,
     });
+  }
+
+  @Get()
+  async getMyFriendList(
+    @Request() { user }: JwtValidationOutput,
+  ): Promise<UsersContacts[]> {
+    return this.usersContactsService.getFriendList(user.userID);
   }
 }
