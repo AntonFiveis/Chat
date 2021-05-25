@@ -19,11 +19,25 @@ const validate = ({ isAuth, values, errors }) => {
       }
     },
 
+    phone: (value) => {
+      if (!value) {
+        errors.phone = 'Введите ваш телефон';
+      } else if (!/^[0-9\-+]{9,15}$/i.test(value)) {
+        errors.phone = 'Неверный номер телефона!';
+      }
+    },
+
     confirm__password: (value) => {
       if (!value) {
         errors.confirm__password = 'Подтвердите пароль';
       } else if (values.password !== value) {
         errors.confirm__password = 'Пароли не совпадают!';
+      }
+    },
+
+    userfullname: (value) => {
+      if (!value) {
+        errors.userfullname = 'Введите ваше имя';
       }
     },
 

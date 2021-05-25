@@ -15,21 +15,25 @@ const LoginFormContainer = withFormik({
   }),
   validate: (values) => {
     let errors = {};
-
     validateFunc({ isAuth: true, values, errors });
-
     return errors;
   },
 
   handleSubmit: (values, { setSubmitting, props }) => {
-    store.dispatch(userActions.fetchUserLogin(values)).then(({ status }) => {
-      if (status === 200) {
-        setTimeout(() => {
-          props.history.push('/');
-        }, 1000);
-      }
-      setSubmitting(false);
-    });
+    store
+      .dispatch(userActions.fetchUserLogin(values))
+      .then(({ status }) => {
+        console.log(status);
+        if (status === 201) {
+          setTimeout(() => {
+            props.history.push('/');
+          }, 1000);
+        }
+        setSubmitting(false);
+      })
+      .catch(() => {
+        setSubmitting(false);
+      });
   },
 
   displayName: 'LoginForm',

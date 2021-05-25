@@ -7,7 +7,7 @@ import { Message } from '../';
 
 import './Messages.scss';
 
-const Messages = ({ blockRef, isLoading, items }) => {
+const Messages = ({ blockRef, isLoading, items, user }) => {
   return (
     <div
       ref={blockRef}
@@ -17,7 +17,9 @@ const Messages = ({ blockRef, isLoading, items }) => {
         <Spin size="large" tip="Загрузка сообщений..."></Spin>
       ) : items && !isLoading ? (
         items.length > 0 ? (
-          items.map((item) => <Message key={item.id} {...item} />)
+          items.map((item) => (
+            <Message key={item.id} {...item} isMe={user.id === item.user.id} />
+          ))
         ) : (
           <Empty
             image={Empty.PRESENTED_IMAGE_SIMPLE}
