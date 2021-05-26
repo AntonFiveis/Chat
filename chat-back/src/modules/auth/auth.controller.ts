@@ -56,11 +56,15 @@ export class AuthController {
     @Body('fingerprint') fingerprint: string,
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
-    const { accessToken, refreshToken } = await this.authService.login(
-      { email, password },
-      fingerprint,
-    );
-    this.sendTokens({ accessToken, refreshToken }, res);
+    try {
+      const { accessToken, refreshToken } = await this.authService.login(
+        { email, password },
+        fingerprint,
+      );
+      this.sendTokens({ accessToken, refreshToken }, res);
+    } catch (e) {
+      throw new UnauthorizedException();
+    }
   }
 
   @Delete()
