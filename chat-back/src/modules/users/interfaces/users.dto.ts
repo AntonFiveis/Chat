@@ -10,4 +10,5 @@ export interface UsersUpdates {
   name?: string;
   nickname?: string;
   phone?: string;
+  photo?: string;
 }

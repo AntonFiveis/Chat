@@ -60,6 +60,15 @@ export class AuthService {
     fingerprint: string,
   ): Promise<TokensPair> {
     const user: Users = await this.usersService.findOneByEmail(email);
+    try {
+      await this.pgService.delete({
+        tableName: this.tableName,
+        cascade: true,
+        where: { userID: user.userID, fingerprint },
+      });
+    } catch (e) {
+      console.log(e);
+    }
     if (await this.validatePassword(user, password))
       return this.createTokenPair(user.userID, fingerprint);
     else throw new UnauthorizedException('Incorrect credentials');

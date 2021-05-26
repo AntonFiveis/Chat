@@ -12,10 +12,14 @@ import { AuthService } from './auth.service';
 import { AuthCredentialsDTO } from './interfaces/auth-credentials-dto';
 import { TokensPair } from './interfaces/tokens-pair';
 import { UsersDto } from '../users/interfaces/users.dto';
+import { WsSessionsService } from '../ws-sessions/ws-sessions.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private wsSessionsService: WsSessionsService,
+  ) {}
 
   sendTokens({ accessToken, refreshToken }: TokensPair, res: Response): void {
     res.cookie('refreshToken', refreshToken, {
@@ -73,7 +77,8 @@ export class AuthController {
     @Body('fingerprint') fingerprint: string,
     @Res() res: Response,
   ): Promise<void> {
-    if (!request.cookies['refreshToken']) throw new UnauthorizedException();
+    if (!request.cookies['refreshToken'] || !request.cookies['accessToken'])
+      throw new UnauthorizedException();
     const {
       accessToken,
       refreshToken,
@@ -81,6 +86,9 @@ export class AuthController {
       request.cookies['refreshToken'],
       fingerprint,
     );
+    this.wsSessionsService.updateSession(request.cookies['accessToken'], {
+      accessToken,
+    });
     this.sendTokens({ accessToken, refreshToken }, res);
   }
 }

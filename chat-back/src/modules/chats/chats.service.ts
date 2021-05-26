@@ -50,7 +50,7 @@ export class ChatsService {
 
   async getPhoto(path: string): Promise<Readable> {
     return new Promise((resolve, reject) => {
-      fs.readFile(path, null, (err, data) => {
+      fs.readFile('/photos/' + path, null, (err, data) => {
         if (err) reject();
 
         const stream = new Readable();

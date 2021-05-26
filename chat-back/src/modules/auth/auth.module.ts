@@ -7,6 +7,8 @@ import { PgService } from '../pg/pg.service';
 import { PgModule } from '../pg/pg.module';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
+import { WsSessionsModule } from '../ws-sessions/ws-sessions.module';
+import { WsSessionsService } from '../ws-sessions/ws-sessions.service';
 
 @Module({
   imports: [
@@ -16,9 +18,16 @@ import { JwtStrategy } from './jwt.strategy';
       signOptions: { expiresIn: '30m' },
     }),
     PgModule,
+    WsSessionsModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, UsersService, PgService, JwtStrategy],
+  providers: [
+    AuthService,
+    UsersService,
+    PgService,
+    JwtStrategy,
+    WsSessionsService,
+  ],
   exports: [AuthService, UsersService, PgService, JwtStrategy, JwtModule],
 })
 export class AuthModule {}
