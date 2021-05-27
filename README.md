@@ -14,3 +14,4 @@
 подробности изображены в файле UserStory.jpeg
 диаграмма базы данных приведена в файле db.jpeg
 
+[ER диаграмма](https://drive.google.com/file/d/1u3mkLUd36yThdbQ-nkF-hrwFz4ibiyo0/view?usp=sharing)
