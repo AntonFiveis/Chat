@@ -13,6 +13,7 @@ import { AuthCredentialsDTO } from './interfaces/auth-credentials-dto';
 import { TokensPair } from './interfaces/tokens-pair';
 import { UsersDto } from '../users/interfaces/users.dto';
 import { WsSessionsService } from '../ws-sessions/ws-sessions.service';
+import { JwtValidationOutput } from './jwt.strategy';
 
 @Controller('auth')
 export class AuthController {
@@ -31,7 +32,7 @@ export class AuthController {
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
       maxAge: 5.184e9,
-      path: '/api',
+      path: '/',
       secure: true,
     });
     res.send({ accessToken });
@@ -69,10 +70,10 @@ export class AuthController {
 
   @Delete()
   async logout(
-    @Body('email') email: string,
+    @Req() { user }: JwtValidationOutput,
     @Body('fingerprint') fingerprint: string,
   ): Promise<void> {
-    await this.authService.logout(email, fingerprint);
+    await this.authService.logout(user.userID, fingerprint);
   }
 
   @Post('refresh')

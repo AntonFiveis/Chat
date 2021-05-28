@@ -25,7 +25,6 @@ import { JwtModule } from '@nestjs/jwt';
     ChatsService,
     MessagesService,
     ChatMembersService,
-
   ],
 })
 export class WsSessionsModule {}

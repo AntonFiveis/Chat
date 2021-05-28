@@ -4,7 +4,6 @@ import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 import { UsersDto, UsersUpdates } from './interfaces/users.dto';
 import { Users } from './interfaces/users.entity';
-import Chats from '../chats/interfaces/chats.entity';
 import * as fs from 'fs';
 import { ImageMinService } from '../image-min/image-min.service';
 import { Readable } from 'stream';

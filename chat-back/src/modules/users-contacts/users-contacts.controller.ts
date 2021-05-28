@@ -10,7 +10,7 @@ import {
 import { UsersContactsService } from './users-contacts.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { JwtValidationOutput } from '../auth/jwt.strategy';
-import UsersContacts from './interfaces/users-contacts.entity';
+import { Users } from '../users/interfaces/users.entity';
 
 @UseGuards(JwtAuthGuard)
 @Controller('users-contacts')
@@ -42,7 +42,7 @@ export class UsersContactsController {
   @Get()
   async getMyFriendList(
     @Request() { user }: JwtValidationOutput,
-  ): Promise<UsersContacts[]> {
+  ): Promise<Users[]> {
     return this.usersContactsService.getFriendList(user.userID);
   }
 }

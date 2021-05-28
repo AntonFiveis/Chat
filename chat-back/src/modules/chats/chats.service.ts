@@ -6,7 +6,7 @@ import { MessagesService } from '../messages/messages.service';
 import { ChatsWithMessages } from './interfaces/chats.output.dto';
 import * as fs from 'fs';
 import { ImageMinService } from '../image-min/image-min.service';
-import {Readable} from "stream";
+import { Readable } from 'stream';
 
 @Injectable()
 export class ChatsService {

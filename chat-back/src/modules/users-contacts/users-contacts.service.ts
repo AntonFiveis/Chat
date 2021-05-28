@@ -3,9 +3,14 @@ import { PgService } from '../pg/pg.service';
 import { v4 as uuid } from 'uuid';
 import { UsersContactsDTO } from './interfaces/users-contacts.dto';
 import UsersContacts from './interfaces/users-contacts.entity';
+import { UsersService } from '../users/users.service';
+import { Users } from '../users/interfaces/users.entity';
 @Injectable()
 export class UsersContactsService {
-  constructor(private pgService: PgService) {}
+  constructor(
+    private pgService: PgService,
+    private usersService: UsersService,
+  ) {}
   private tableName = 'UsersContacts';
   async addFriend(usersContactsDTO: UsersContactsDTO): Promise<void> {
     if (await this.checkIsFriend(usersContactsDTO))
@@ -15,11 +20,16 @@ export class UsersContactsService {
       });
   }
 
-  async getFriendList(userID: string): Promise<UsersContacts[]> {
-    return await this.pgService.find({
+  async getFriendList(userID: string): Promise<Users[]> {
+    const friends: UsersContacts[] = await this.pgService.find({
       tableName: this.tableName,
       where: { userID },
     });
+    return Promise.all(
+      friends.map(async (friend) => {
+        return this.usersService.findOneByID(friend.friendUserID);
+      }),
+    );
   }
 
   async deleteFromFriendList(

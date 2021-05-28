@@ -81,10 +81,10 @@ export class AuthService {
     return (await bcrypt.hash(pass, salt)) === password;
   }
 
-  async logout(email: string, fingerprint: string): Promise<void> {
+  async logout(userID: string, fingerprint: string): Promise<void> {
     await this.pgService.delete({
       tableName: this.tableName,
-      where: { email, fingerprint },
+      where: { userID, fingerprint },
     });
   }
 
