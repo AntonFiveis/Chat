@@ -1,9 +1,9 @@
-import { axios } from '../../core';
+import { request } from '../../core';
 
 export default {
-  getAllByDialogId: (id) => axios.get(`/messages?dialog=${id}`),
+  getAllByDialogId: (id) => request(true).get(`/messages?dialog=${id}`),
   send: (text, dialogId) =>
-    axios.post('/messages', {
+    request(true).post('/messages', {
       text: text,
       dialog_id: dialogId,
     }),

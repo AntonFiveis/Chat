@@ -4,6 +4,8 @@ import { ChatsController } from './chats.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { MessagesModule } from '../messages/messages.module';
 import { MessagesService } from '../messages/messages.service';
+import { ChatMembersModule } from '../chat-members/chat-members.module';
+import { ChatMembersService } from '../chat-members/chat-members.service';
 
 @Module({
   imports: [
@@ -13,8 +15,9 @@ import { MessagesService } from '../messages/messages.service';
       },
     }),
     MessagesModule,
+    ChatMembersModule,
   ],
-  providers: [ChatsService, MessagesService],
+  providers: [ChatsService, MessagesService, ChatMembersService],
   controllers: [ChatsController],
   exports: [],
 })

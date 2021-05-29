@@ -1,24 +1,17 @@
-import { axios } from '../../core';
+import { request } from '../../core';
 
 export default {
-  addFriend: async (friendUserID, accessToken) => {
-    await axios.post(
+  addFriend: async (friendUserID) => {
+    await request(true).post(
       '/api/users-contacts',
       {},
       {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
         params: { friendUserID },
       },
     );
   },
-  getMyFriendList: async (accessToken) => {
-    const res = await axios.get('/api/users-contacts', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+  getMyFriendList: async () => {
+    const res = await request(true).get('/api/users-contacts');
     return res.data;
   },
 };

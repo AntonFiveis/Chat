@@ -1,7 +1,7 @@
 import { openNotification } from '../../utils/helpers';
 import { userApi } from '../../utils/api';
 
-import _getFingerprint from '../../services/auth.service';
+import _getFingerprint from '../../utils/helpers/fingerprint';
 
 const actions = {
   setUserData: (data) => ({
@@ -21,17 +21,16 @@ const actions = {
         fingerprint,
       });
       console.log('status=', status);
-      const { accessToken } = data;
+      const { accessToken, finishDate } = data;
       if (status === 201) {
         openNotification({
           title: 'Отлично!',
           text: 'Авторизация успешна.',
           type: 'success',
         });
-        console.log(accessToken);
-        window.axios.defaults.headers.common['Authorization'] =
-          'Bearer ' + accessToken;
-        window.localStorage['accessToken'] = accessToken;
+        window.localStorage.setItem('accessToken', accessToken);
+        window.localStorage.setItem('finishDate', finishDate);
+        window.localStorage.setItem('fingerprint', fingerprint);
         dispatch(actions.fetchUserData());
       }
       return { data, status };
@@ -65,8 +64,7 @@ const actions = {
           text: 'Регистрация успешна.',
           type: 'success',
         });
-        window.axios.defaults.headers.common['Authorization'] =
-          'Bearer ' + accessToken;
+
         window.localStorage['accessToken'] = accessToken;
         dispatch(actions.fetchUserData());
       }

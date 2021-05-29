@@ -15,6 +15,7 @@ import { ChatsService } from './chats.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtValidationOutput } from '../auth/jwt.strategy';
+import { ChatsWithMessages } from './interfaces/chats.output.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('chats')
@@ -27,6 +28,12 @@ export class ChatsController {
   ): Promise<void> {
     const stream = await this.chatsService.getPhoto(filename);
     stream.pipe(res);
+  }
+  @Get()
+  async getMyChats(
+    @Request() { user }: JwtValidationOutput,
+  ): Promise<ChatsWithMessages[]> {
+    return this.chatsService.getMyChats(user.userID);
   }
 
   @Post('/file')

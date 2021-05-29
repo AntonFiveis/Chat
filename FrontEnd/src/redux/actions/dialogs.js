@@ -1,4 +1,4 @@
-import { dialogsApi } from '../../utils/api';
+import { chatsApi } from '../../utils/api';
 
 const actions = {
   setDialogs: (items) => ({
@@ -10,7 +10,7 @@ const actions = {
     payload: id,
   }),
   fetchDialogs: () => (dispatch) => {
-    dialogsApi.getAll().then(({ data }) => {
+    chatsApi.getAll().then(({ data }) => {
       dispatch(actions.setDialogs(data));
     });
   },

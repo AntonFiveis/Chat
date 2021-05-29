@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PgService } from '../pg/pg.service';
 import { ChatMembersDTO } from './interfaces/chat-members.dto';
 import ChatMembers from './interfaces/chat-members.entity';
-import { ChatsWithMessages } from '../chats/interfaces/chats.output.dto';
-import { ChatsService } from '../chats/chats.service';
 import { UsersService } from '../users/users.service';
 import { Users } from '../users/interfaces/users.entity';
 
@@ -11,7 +9,6 @@ import { Users } from '../users/interfaces/users.entity';
 export class ChatMembersService {
   constructor(
     private pgService: PgService,
-    private chatsService: ChatsService,
     private usersService: UsersService,
   ) {}
   private tableName = 'ChatMembers';
@@ -28,16 +25,11 @@ export class ChatMembersService {
     );
   }
 
-  async getMyChats(userID: string): Promise<ChatsWithMessages[]> {
-    const chatsIDs: ChatMembers[] = await this.pgService.find({
+  async getMyChats(userID: string): Promise<ChatMembers[]> {
+    return await this.pgService.find({
       tableName: this.tableName,
       where: { userID },
     });
-    return Promise.all(
-      chatsIDs.map(async (chat) => {
-        return await this.chatsService.getChatWithMessages(chat.chatID);
-      }),
-    );
   }
 
   async addUserToChat({ userID, chatID }: ChatMembersDTO): Promise<void> {

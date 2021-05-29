@@ -7,6 +7,8 @@ import { ChatsWithMessages } from './interfaces/chats.output.dto';
 import * as fs from 'fs';
 import { ImageMinService } from '../image-min/image-min.service';
 import { Readable } from 'stream';
+import { ChatMembersService } from '../chat-members/chat-members.service';
+import ChatMembers from '../chat-members/interfaces/chat-members.entity';
 
 @Injectable()
 export class ChatsService {
@@ -14,6 +16,7 @@ export class ChatsService {
     private pgService: PgService,
     private messagesService: MessagesService,
     private imageMinService: ImageMinService,
+    private chatMembersService: ChatMembersService,
   ) {}
   private tableName = 'Chats';
 
@@ -46,6 +49,17 @@ export class ChatsService {
     }
 
     return name;
+  }
+
+  async getMyChats(userID: string): Promise<ChatsWithMessages[]> {
+    const chatIDs: ChatMembers[] = await this.chatMembersService.getMyChats(
+      userID,
+    );
+    return Promise.all(
+      chatIDs.map(async (chat) => {
+        return this.getChatWithMessages(chat.chatID);
+      }),
+    );
   }
 
   async getPhoto(path: string): Promise<Readable> {

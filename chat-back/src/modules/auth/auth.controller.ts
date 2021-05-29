@@ -35,7 +35,8 @@ export class AuthController {
       path: '/',
       secure: true,
     });
-    res.send({ accessToken });
+    const finishDate = Number(new Date()) + 30 * 60 * 1000;
+    res.send({ accessToken, finishDate });
   }
 
   @Post('signup')
