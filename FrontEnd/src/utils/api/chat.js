@@ -12,4 +12,9 @@ export default {
   getAll: async () => {
     return request(true).get('/api/chats');
   },
+  create: async ({ partner, text }) =>
+    await request(true).post('/api/chats/create', {
+      partner,
+      text,
+    }),
 };
