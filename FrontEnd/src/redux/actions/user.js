@@ -8,10 +8,22 @@ const actions = {
     type: 'USER:SET_DATA',
     payload: data,
   }),
+  setIsAuth: (bool) => ({
+    type: 'USER:SET_IS_AUTH',
+    payload: bool,
+  }),
   fetchUserData: () => (dispatch) => {
-    userApi.getMe().then(({ data }) => {
-      dispatch(actions.setUserData(data));
-    });
+    userApi
+      .getMe()
+      .then(({ data }) => {
+        dispatch(actions.setUserData(data));
+      })
+      .catch((err) => {
+        if (err.response.status === 403) {
+          dispatch(actions.setIsAuth(false));
+          delete window.localStorage.accessToken;
+        }
+      });
   },
   fetchUserLogin: (postData) => async (dispatch) => {
     try {
@@ -32,6 +44,7 @@ const actions = {
         window.localStorage.setItem('finishDate', finishDate);
         window.localStorage.setItem('fingerprint', fingerprint);
         dispatch(actions.fetchUserData());
+        dispatch(actions.setIsAuth(true));
       }
       return { data, status };
     } catch (error) {

@@ -17,7 +17,7 @@ const Home = () => {
         <div className="chat__sidebar">
           <div className="chat__sidebar-header">
             <div>
-              <Button type="link" shape="circle" icon={<TeamOutlined />} />
+              <TeamOutlined shape="circle" />
               <span>Список диалогов</span>
             </div>
             <Button type="link" shape="circle" icon={<FormOutlined />} />

@@ -25,9 +25,7 @@ const LoginFormContainer = withFormik({
       .then(({ status }) => {
         console.log(status);
         if (status === 201) {
-          setTimeout(() => {
-            props.history.push('/');
-          }, 1000);
+          props.history.push('/');
         }
         setSubmitting(false);
       })
