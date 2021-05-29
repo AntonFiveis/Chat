@@ -35,7 +35,7 @@ export class AuthController {
       path: '/',
       secure: true,
     });
-    const finishDate = Number(new Date()) + 30 * 60 * 1000;
+    const finishDate = Number(new Date()) + 20 * 60 * 1000;
     res.send({ accessToken, finishDate });
   }
 

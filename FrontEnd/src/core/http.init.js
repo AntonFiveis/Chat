@@ -17,7 +17,8 @@ class Http {
           req.headers.authorization =
             'Bearer ' + window.localStorage.getItem('accessToken');
           if (
-            new Date(window.localStorage.getItem('finishDate')) < new Date()
+            Number(window.localStorage.getItem('finishDate')) <
+            Number(new Date())
           ) {
             return userApi
               .refresh(window.localStorage.getItem('fingerprint'))

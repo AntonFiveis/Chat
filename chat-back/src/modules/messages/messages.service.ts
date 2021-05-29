@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PgService } from '../pg/pg.service';
 import Messages from './interfaces/messages.entity';
 import { MessagesDTO } from './interfaces/messages.dto';
-
+import { v4 as uuid } from 'uuid';
 @Injectable()
 export class MessagesService {
   constructor(private pgService: PgService) {}
@@ -35,7 +35,7 @@ SELECT * FROM "${
   async createNewMessage(messagesDTO: MessagesDTO): Promise<Date> {
     const res = await this.pgService.create({
       tableName: this.tableName,
-      values: [messagesDTO],
+      values: [{ ...messagesDTO, messagesID: uuid() }],
       returning: 'date',
     });
     return res.rows[0].date;

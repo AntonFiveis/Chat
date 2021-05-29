@@ -1,5 +1,8 @@
-import io from 'socket.io-client';
+import { Client } from 'rpc-websockets';
 
-const socket = io(window.location.origin.replace('3000', '3001'));
-
+const socket = new Client('ws:localhost:3001');
+socket.on('ADD_CHAT', (res) => console.log(res));
+socket.on('REMOVE_CHAT_MEMBER', (res) => console.log(res));
+socket.on('ADD_CHAT_MEMBER', (res) => console.log(res));
+socket.on('ADD_MESSAGE', (res) => console.log(res));
 export default socket;

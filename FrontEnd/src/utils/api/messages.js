@@ -7,4 +7,6 @@ export default {
       text: text,
       dialog_id: dialogId,
     }),
+  get50FromBothSidesOf: (chatID, date) =>
+    request(true).get('/messages', { params: { date, chatID } }),
 };

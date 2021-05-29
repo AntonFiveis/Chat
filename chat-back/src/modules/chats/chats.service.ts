@@ -9,6 +9,7 @@ import { ImageMinService } from '../image-min/image-min.service';
 import { Readable } from 'stream';
 import { ChatMembersService } from '../chat-members/chat-members.service';
 import ChatMembers from '../chat-members/interfaces/chat-members.entity';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class ChatsService {
@@ -85,7 +86,7 @@ export class ChatsService {
   async createChat(chatDTO: ChatsDTO): Promise<string> {
     const res = await this.pgService.create({
       tableName: this.tableName,
-      values: [chatDTO],
+      values: [{ ...chatDTO, chatID: uuid() }],
       returning: 'chatID',
     });
     return res.rows[0].chatID;
