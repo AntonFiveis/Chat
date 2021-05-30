@@ -1,13 +1,20 @@
 import React from 'react';
-import { EllipsisOutlined } from '@ant-design/icons';
-
+import { useHistory } from 'react-router-dom';
 import { Button } from 'antd';
-import { Messages, ChatInput, Status } from '../../containers';
-import { Sidebar } from '../../containers';
+import { Messages, ChatInput, Status, Sidebar } from '../../containers';
+import { userApi } from '../../utils/api';
 
 import './Home.scss';
 
 const Home = () => {
+  const history = useHistory();
+
+  const logOut = () => {
+    localStorage.clear();
+    userApi.logout();
+    history.push('/login', { from: 'Home' });
+  };
+
   return (
     <section className="home">
       <div className="chat">
@@ -16,7 +23,9 @@ const Home = () => {
           <div className="chat__dialog-header">
             <div />
             <Status online />
-            <Button type="link" shape="circle" icon={<EllipsisOutlined />} />
+            <Button onClick={logOut} type="link" shape="circle">
+              Выйти
+            </Button>
           </div>
           <div className="chat__dialog-messages">
             <Messages />
