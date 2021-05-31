@@ -20,22 +20,22 @@ export class UsersContactsController {
   @Post()
   async addFriend(
     @Request() { user }: JwtValidationOutput,
-    @Query('friendUserID') friendUserID: string,
+    @Query('friendUserEmail') friendUserEmail: string,
   ): Promise<void> {
     await this.usersContactsService.addFriend({
       userID: user.userID,
-      friendUserID,
+      friendUserEmail,
     });
   }
 
   @Delete()
   async removeFriend(
     @Request() { user }: JwtValidationOutput,
-    @Query('friendUserID') friendUserID: string,
+    @Query('friendUserEmail') friendUserEmail: string,
   ): Promise<void> {
     await this.usersContactsService.deleteFromFriendList({
       userID: user.userID,
-      friendUserID,
+      friendUserEmail,
     });
   }
 

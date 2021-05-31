@@ -1,4 +1,4 @@
 export interface UsersContactsDTO {
   userID: string;
-  friendUserID: string;
+  friendUserEmail: string;
 }

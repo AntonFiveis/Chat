@@ -1,12 +1,12 @@
 import { request } from '../../core';
 
 export default {
-  addFriend: async (friendUserID) => {
+  addFriend: async (friendUserEmail) => {
     await request(true).post(
       '/api/users-contacts',
       {},
       {
-        params: { friendUserID },
+        params: { friendUserEmail },
       },
     );
   },

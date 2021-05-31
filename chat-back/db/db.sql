@@ -4,6 +4,7 @@ CREATE TABLE "Users"(
 "userID" UUID PRIMARY KEY,
 "name" VARCHAR,
 "nickname" VARCHAR UNIQUE,
+"email" VARCHAR UNIQUE,
 "phone" VARCHAR UNIQUE ,
 "password" VARCHAR,
 "salt" VARCHAR,
@@ -21,7 +22,7 @@ UNIQUE ("userID", "fingerprint")
 CREATE TABLE "UsersContacts"(
 "userContactID" UUID PRIMARY KEY,
 "userID" UUID REFERENCES "Users"("userID") ON DELETE CASCADE,
-"friendUserID" UUID REFERENCES "Users"("userID") ON DELETE CASCADE
+"friendUserEmail" VARCHAR REFERENCES "Users"("email") ON DELETE CASCADE
 );
 
 CREATE TABLE "Chats"(

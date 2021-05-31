@@ -27,7 +27,7 @@ export class UsersContactsService {
     });
     return Promise.all(
       friends.map(async (friend) => {
-        return this.usersService.findOneByID(friend.friendUserID);
+        return this.usersService.findOneByEmail(friend.friendUserEmail);
       }),
     );
   }
