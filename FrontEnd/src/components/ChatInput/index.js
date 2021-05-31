@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Input, Button } from 'antd';
 import { SmileOutlined, ArrowRightOutlined } from '@ant-design/icons';
@@ -24,14 +24,33 @@ const ChatInput = (props) => {
     }
   };
 
+  const addEmoji = (obj) => {
+    const { colons } = obj;
+    setValue((value + ' ' + colons).trim());
+  };
+
+  const handleOutsideClick = (el, e) => {
+    if (el && !el.contains(e.target)) {
+      setShowEmojiPicker(false);
+    }
+  };
+
+  useEffect(() => {
+    const el = document.querySelector('.chat-input__smile-btn');
+    document.addEventListener('click', handleOutsideClick.bind(this, el));
+    return () => {
+      document.addEventListener('click', handleOutsideClick.bind(this, el));
+    };
+  }, []);
+
   return (
     <div className="chat-input">
       <div className="chat-input__smile-btn">
-        {emojiPickerVisible && (
-          <div className="chat-input__emoji-picker">
-            <Picker set="apple" />
-          </div>
-        )}
+        <div className="chat-input__emoji-picker">
+          {emojiPickerVisible && (
+            <Picker onSelect={(emojiTag) => addEmoji(emojiTag)} set="apple" />
+          )}
+        </div>
         <Button
           onClick={toggleEmojiPicker}
           type="link"

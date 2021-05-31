@@ -1,11 +1,13 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import reactStringReplace from 'react-string-replace';
 import { Emoji } from 'emoji-mart';
-
 import { Time, Avatar } from '../';
 
 import './Message.scss';
+import { set } from 'date-fns';
 
 const Message = ({ user, text, date, isMe }) => {
   return (
@@ -17,8 +19,9 @@ const Message = ({ user, text, date, isMe }) => {
         <div className="message__info">
           <div className="message__bubble">
             <p className="message__text">
-              {text}
-              <Emoji set="apple" emoji={text} size={16} />
+              {reactStringReplace(text, /:(.+?):/g, (match, i) => (
+                <Emoji emoji={match} set="apple" size={16} />
+              ))}
             </p>
           </div>
           <span className="message__date">{<Time date={date} />}</span>
