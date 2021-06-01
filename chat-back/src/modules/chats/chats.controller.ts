@@ -33,7 +33,7 @@ export class ChatsController {
   async getMyChats(
     @Request() { user }: JwtValidationOutput,
   ): Promise<ChatsWithMessages[]> {
-    return this.chatsService.getMyChats(user.userID);
+    return this.chatsService.getMyChats(user.email);
   }
 
   @Post('/file')
@@ -41,8 +41,8 @@ export class ChatsController {
   async uploadChatPhoto(
     @UploadedFile() image: Express.Multer.File,
     @Request() { user }: JwtValidationOutput,
-    @Query('chatID') chatID: string,
+    @Query('chatUUID') chatUUID: string,
   ): Promise<string> {
-    return this.chatsService.uploadPhoto(image, chatID, user.userID);
+    return this.chatsService.uploadPhoto(image, chatUUID, user.email);
   }
 }

@@ -28,50 +28,34 @@ export class UsersController {
   async getUserFriends(
     @Request() { user }: JwtValidationOutput,
   ): Promise<UsersOutputDTO> {
-    const { password, salt, ...result } = await this.usersService.findOneByID(
-      user.userID,
-    );
-    return result;
+    return this.usersService.findOneByEmail(user.email);
   }
   @Patch()
   async updateUserInfo(
     @Request() { user }: JwtValidationOutput,
     @Body('updates') updates: UsersUpdates,
   ): Promise<void> {
-    await this.usersService.updateUser(user.userID, updates);
+    await this.usersService.updateUser(user.email, updates);
   }
   @Delete()
   async deleteUser(@Request() { user }: JwtValidationOutput): Promise<void> {
-    await this.usersService.deleteUser(user.userID);
+    await this.usersService.deleteUser(user.email);
   }
   @Get('/email')
   async getUserByEmail(@Query('email') email: string): Promise<UsersOutputDTO> {
-    const {
-      password,
-      salt,
-      ...result
-    } = await this.usersService.findOneByEmail(email);
-    return result;
+    return this.usersService.findOneByEmail(email);
   }
   @Get('/phone')
-  async getUserByPhone(@Query('phone') phone: string): Promise<UsersOutputDTO> {
-    const {
-      password,
-      salt,
-      ...result
-    } = await this.usersService.findOneByPhone(phone);
-    return result;
+  async getUsersByPhone(
+    @Query('phone') phone: string,
+  ): Promise<UsersOutputDTO[]> {
+    return this.usersService.findByPhone(phone);
   }
   @Get('/nickname')
-  async getUserByNickname(
+  async getUsersByNickname(
     @Query('nickname') nickname: string,
-  ): Promise<UsersOutputDTO> {
-    const {
-      password,
-      salt,
-      ...result
-    } = await this.usersService.findOneByNickname(nickname);
-    return result;
+  ): Promise<UsersOutputDTO[]> {
+    return this.usersService.findByNickname(nickname);
   }
 
   @Post('/file')
@@ -80,7 +64,7 @@ export class UsersController {
     @UploadedFile() image: Express.Multer.File,
     @Request() { user }: JwtValidationOutput,
   ): Promise<string> {
-    return this.usersService.uploadPhoto(image, user.userID);
+    return this.usersService.uploadPhoto(image, user.email);
   }
   @Get('/file/:filename')
   async getPhoto(

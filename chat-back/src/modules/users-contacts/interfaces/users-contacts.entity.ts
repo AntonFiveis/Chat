@@ -1,5 +1,4 @@
 export default interface UsersContacts {
-  contactID: string;
-  userID: string;
+  userEmail: string;
   friendUserEmail: string;
 }

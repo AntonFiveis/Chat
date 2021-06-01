@@ -1,6 +1,5 @@
 export default interface ChatMembers {
-  chatMembersID: string;
-  chatID: string;
-  userID: string;
-  lastMessageID: string;
+  chatUUID: string;
+  userEmail: string;
+  lastMessageUUID: string;
 }

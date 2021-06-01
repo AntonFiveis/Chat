@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PgService } from '../pg/pg.service';
-import { v4 as uuid } from 'uuid';
 import { UsersContactsDTO } from './interfaces/users-contacts.dto';
 import UsersContacts from './interfaces/users-contacts.entity';
 import { UsersService } from '../users/users.service';
-import { Users } from '../users/interfaces/users.entity';
+import { UsersOutputDTO } from '../users/interfaces/users.output.dto';
 @Injectable()
 export class UsersContactsService {
   constructor(
@@ -16,14 +15,14 @@ export class UsersContactsService {
     if (await this.checkIsFriend(usersContactsDTO))
       await this.pgService.create({
         tableName: this.tableName,
-        values: [{ ...usersContactsDTO, contactID: uuid() }],
+        values: [{ ...usersContactsDTO }],
       });
   }
 
-  async getFriendList(userID: string): Promise<Users[]> {
+  async getFriendList(userEmail: string): Promise<UsersOutputDTO[]> {
     const friends: UsersContacts[] = await this.pgService.find({
       tableName: this.tableName,
-      where: { userID },
+      where: { userEmail },
     });
     return Promise.all(
       friends.map(async (friend) => {

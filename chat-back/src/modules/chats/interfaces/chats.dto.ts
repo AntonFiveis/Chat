@@ -1,7 +1,7 @@
 export interface ChatsDTO {
   isGroup?: boolean;
   chatName: string;
-  ownerID: string;
+  ownerEmail: string;
 }
 
 export interface ChatsWithUsersDTO extends ChatsDTO {

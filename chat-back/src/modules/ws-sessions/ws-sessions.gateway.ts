@@ -53,12 +53,12 @@ export class WsSessionsGateway
       if (!session) throw new Error();
       this.jwtService.verify(session.accessToken);
       const chatMembers = await this.chatMembersService.getChatMembers(
-        messagesDTO.chatID,
+        messagesDTO.chatUUID,
       );
       const date = await this.messagesService.createNewMessage(messagesDTO);
       chatMembers.forEach((cm) => {
-        const sessions: WsSession[] = this.wsSessionsService.findSessionsByUserID(
-          cm.userID,
+        const sessions: WsSession[] = this.wsSessionsService.findSessionsByUserEmail(
+          cm.email,
         );
         this.wsSessionsService.sendResponse(
           sessions,
@@ -81,16 +81,19 @@ export class WsSessionsGateway
     try {
       if (!session) throw new Error();
       this.jwtService.verify(session.accessToken);
-      const chatID = await this.chatsService.createChat(chatDTO);
+      const chatUUID = await this.chatsService.createChat(chatDTO);
 
       for (const user of users) {
-        await this.chatMembersService.addUserToChat({ userID: user, chatID });
-        const userSessions: WsSession[] = this.wsSessionsService.findSessionsByUserID(
+        await this.chatMembersService.addUserToChat({
+          userEmail: user,
+          chatUUID,
+        });
+        const userSessions: WsSession[] = this.wsSessionsService.findSessionsByUserEmail(
           user,
         );
         this.wsSessionsService.sendResponse(
           userSessions,
-          { ...chatDTO, chatID },
+          { ...chatDTO, chatUUID },
           'ADD_CHAT',
         );
       }
@@ -112,12 +115,12 @@ export class WsSessionsGateway
       }
       this.jwtService.verify(session.accessToken);
       await this.chatMembersService.addUserToChat(chatMembersDTO);
-      const newChatMemberSessions: WsSession[] = this.wsSessionsService.findSessionsByUserID(
-        chatMembersDTO.userID,
+      const newChatMemberSessions: WsSession[] = this.wsSessionsService.findSessionsByUserEmail(
+        chatMembersDTO.userEmail,
       );
       if (!newChatMemberSessions) return { ok: true };
       const chatWithMessages = this.chatsService.getChatWithMessages(
-        chatMembersDTO.chatID,
+        chatMembersDTO.chatUUID,
       );
       this.wsSessionsService.sendResponse(
         newChatMemberSessions,
@@ -142,13 +145,13 @@ export class WsSessionsGateway
       }
       this.jwtService.verify(session.accessToken);
       await this.chatMembersService.removeUserFromChat(chatMembersDTO);
-      const chatMemberSessions: WsSession[] = this.wsSessionsService.findSessionsByUserID(
-        chatMembersDTO.userID,
+      const chatMemberSessions: WsSession[] = this.wsSessionsService.findSessionsByUserEmail(
+        chatMembersDTO.userEmail,
       );
       if (!chatMemberSessions) return { ok: true };
       this.wsSessionsService.sendResponse(
         chatMemberSessions,
-        { chatID: chatMembersDTO.chatID },
+        { chatUUID: chatMembersDTO.chatUUID },
         'REMOVE_CHAT_MEMBER',
       );
 
@@ -158,7 +161,10 @@ export class WsSessionsGateway
     }
   }
 
-  handleConnection(client: WebSocket, request: IncomingMessage): void {
+  async handleConnection(
+    client: WebSocket,
+    request: IncomingMessage,
+  ): Promise<void> {
     const accessToken = cookie.parse(
       request.headers.cookie ? request.headers.cookie : '',
     ).accessToken;
@@ -176,12 +182,13 @@ export class WsSessionsGateway
 
       const session: WsSession = {
         accessToken,
-        userID: res.userID,
+        userEmail: res.email,
         socket: client,
       };
 
       this.wsSessionsService.addNewSession(session);
-      sendResponse({ ok: true });
+      const chats = await this.chatsService.getMyChats(res.email);
+      sendResponse({ ok: true, chats });
     } catch (error) {
       sendResponse({ ok: false, code: -32600, message: 'INVALID TOKEN' });
       return client.close(1014);

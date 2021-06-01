@@ -1,6 +1,6 @@
 export interface RefreshTokenEntity {
   refreshToken: string;
-  userID: string;
+  userEmail: string;
   fingerprint: string;
   expiresIn: number;
 }

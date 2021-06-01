@@ -1,8 +1,7 @@
 export interface UsersOutputDTO {
-  userID: string;
+  email: string;
   name: string;
   nickname: string;
   phone: string;
-  email: string;
   photo: string | undefined;
 }

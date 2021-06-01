@@ -7,6 +7,7 @@ import { Users } from './interfaces/users.entity';
 import * as fs from 'fs';
 import { ImageMinService } from '../image-min/image-min.service';
 import { Readable } from 'stream';
+import { UsersOutputDTO } from './interfaces/users.output.dto';
 @Injectable()
 export class UsersService {
   constructor(
@@ -14,66 +15,76 @@ export class UsersService {
     private imageMinService: ImageMinService,
   ) {}
   private tableName = 'Users';
-  async findOneByEmail(email: string): Promise<Users> {
+
+  splitUser(user: Users): UsersOutputDTO {
+    const { password, salt, ...result } = user;
+    return result;
+  }
+
+  async findOneByEmail(email: string): Promise<UsersOutputDTO> {
+    const res: Users = await this.pgService.findOne({
+      tableName: this.tableName,
+      where: { email },
+    });
+    return this.splitUser(res);
+  }
+
+  async findOneByEmailWithPassword(email: string): Promise<Users> {
     return await this.pgService.findOne({
       tableName: this.tableName,
       where: { email },
     });
   }
 
-  async findOneByNickname(nickname: string): Promise<Users> {
-    return await this.pgService.findOne({
+  async findByNickname(nickname: string): Promise<UsersOutputDTO[]> {
+    const res: Users[] = await this.pgService.find({
       tableName: this.tableName,
       where: { nickname },
     });
+    return res.map((user) => this.splitUser(user));
   }
 
-  async findOneByPhone(phone: string): Promise<Users> {
-    return await this.pgService.findOne({
+  async findByPhone(phone: string): Promise<UsersOutputDTO[]> {
+    const res: Users[] = await this.pgService.find({
       tableName: this.tableName,
       where: { phone },
     });
+    return res.map((user) => this.splitUser(user));
   }
 
-  async findOneByID(userID: string): Promise<Users> {
-    return await this.pgService.findOne({
-      tableName: this.tableName,
-      where: { userID },
-    });
-  }
   async createNewUser(userDTO: UsersDto): Promise<string> {
     const salt = bcrypt.genSaltSync();
     const password = bcrypt.hashSync(userDTO.password, salt);
     return (
       await this.pgService.create({
         tableName: this.tableName,
-        values: [{ ...userDTO, userID: uuid(), salt, password }],
+        values: [{ ...userDTO, salt, password }],
         returning: 'userID',
       })
-    ).rows[0].userID;
+    ).rows[0].email;
   }
 
-  async deleteUser(userID: string): Promise<void> {
+  async deleteUser(email: string): Promise<void> {
     await this.pgService.delete({
       tableName: this.tableName,
-      where: { userID },
+      where: { email },
       cascade: true,
     });
   }
 
-  async updateUser(userID: string, updates: UsersUpdates): Promise<void> {
+  async updateUser(email: string, updates: UsersUpdates): Promise<void> {
     await this.pgService.update({
       tableName: this.tableName,
       updates: { ...updates },
-      where: { userID },
+      where: { email },
     });
   }
 
   async uploadPhoto(
     image: Express.Multer.File,
-    userID: string,
+    email: string,
   ): Promise<string> {
-    const user: Users = await this.findOneByID(userID);
+    const user: UsersOutputDTO = await this.findOneByEmail(email);
     if (!user) throw new UnauthorizedException('You are not chat owner!');
     const destinationPath = './avatars';
     if (!fs.existsSync(destinationPath)) {
@@ -87,7 +98,7 @@ export class UsersService {
       0.75,
       name,
     );
-    await this.updateUser(userID, { photo: name });
+    await this.updateUser(email, { photo: name });
 
     if (user.photo) {
       fs.unlinkSync(`./avatars/${user.photo}`);

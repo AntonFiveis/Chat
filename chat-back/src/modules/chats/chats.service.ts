@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PgService } from '../pg/pg.service';
 import { ChatsDTO, ChatsUpdates } from './interfaces/chats.dto';
 import Chats from './interfaces/chats.entity';
@@ -23,14 +27,16 @@ export class ChatsService {
 
   async uploadPhoto(
     image: Express.Multer.File,
-    chatID: string,
-    userID: string,
+    chatUUID: string,
+    userEmail: string,
   ): Promise<string> {
     const chat: Chats = await this.pgService.findOne({
       tableName: this.tableName,
-      where: { chatID, ownerID: userID },
+      where: { chatUUID },
     });
-    if (!chat) throw new UnauthorizedException('You are not chat owner!');
+    if (!chat) throw new NotFoundException('Chat not found');
+    if (chat.ownerEmail !== userEmail)
+      throw new UnauthorizedException('You are not chat owner!');
     const destinationPath = './photos';
     if (!fs.existsSync(destinationPath)) {
       fs.mkdirSync(destinationPath);
@@ -43,7 +49,7 @@ export class ChatsService {
       0.75,
       name,
     );
-    await this.updateChat(chatID, { photo: name });
+    await this.updateChat(chatUUID, { photo: name });
 
     if (chat.photo) {
       fs.unlinkSync(`./photos/${chat.photo}`);
@@ -52,13 +58,13 @@ export class ChatsService {
     return name;
   }
 
-  async getMyChats(userID: string): Promise<ChatsWithMessages[]> {
+  async getMyChats(userEmail: string): Promise<ChatsWithMessages[]> {
     const chatIDs: ChatMembers[] = await this.chatMembersService.getMyChats(
-      userID,
+      userEmail,
     );
     return Promise.all(
       chatIDs.map(async (chat) => {
-        return this.getChatWithMessages(chat.chatID);
+        return this.getChatWithMessages(chat.chatUUID);
       }),
     );
   }
@@ -76,43 +82,36 @@ export class ChatsService {
     });
   }
 
-  async checkOwner(chatID: string, userID: string): Promise<boolean> {
-    const res = await this.pgService.findOne({
-      tableName: this.tableName,
-      where: { chatID, ownerID: userID },
-    });
-    return !!res;
-  }
   async createChat(chatDTO: ChatsDTO): Promise<string> {
     const res = await this.pgService.create({
       tableName: this.tableName,
-      values: [{ ...chatDTO, chatID: uuid() }],
+      values: [{ ...chatDTO, chatUUID: uuid() }],
       returning: 'chatID',
     });
-    return res.rows[0].chatID;
+    return res.rows[0].chatUUID;
   }
-  async updateChat(chatID: string, updates: ChatsUpdates): Promise<void> {
+  async updateChat(chatUUID: string, updates: ChatsUpdates): Promise<void> {
     await this.pgService.update({
       tableName: this.tableName,
       updates: { ...updates },
-      where: { chatID },
+      where: { chatUUID },
     });
   }
-  async deleteChat(chatID: string): Promise<void> {
+  async deleteChat(chatUUID: string): Promise<void> {
     await this.pgService.delete({
       tableName: this.tableName,
-      where: { chatID },
+      where: { chatUUID },
       cascade: true,
     });
   }
   // async updateChatPhoto(chatID: string, photo: File): Promise<void> {}
 
-  async getChatWithMessages(chatID: string): Promise<ChatsWithMessages> {
+  async getChatWithMessages(chatUUID: string): Promise<ChatsWithMessages> {
     const chat: Chats = await this.pgService.findOne({
       tableName: this.tableName,
-      where: { chatID },
+      where: { chatUUID },
     });
-    const messages = await this.messagesService.getLast50messages(chatID);
+    const messages = await this.messagesService.getLast50messages(chatUUID);
     return { ...chat, messages };
   }
 }

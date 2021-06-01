@@ -1,7 +1,7 @@
 export default interface Chats {
-  chatID: string;
+  chatUUID: string;
   isGroup: boolean;
   photo: string;
   chatName: string;
-  ownerID: string;
+  ownerEmail: string;
 }

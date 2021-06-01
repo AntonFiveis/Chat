@@ -3,8 +3,7 @@ import { PgService } from '../pg/pg.service';
 import { ChatMembersDTO } from './interfaces/chat-members.dto';
 import ChatMembers from './interfaces/chat-members.entity';
 import { UsersService } from '../users/users.service';
-import { Users } from '../users/interfaces/users.entity';
-import { v4 as uuid } from 'uuid';
+import { UsersOutputDTO } from '../users/interfaces/users.output.dto';
 @Injectable()
 export class ChatMembersService {
   constructor(
@@ -13,36 +12,39 @@ export class ChatMembersService {
   ) {}
   private tableName = 'ChatMembers';
 
-  async getChatMembers(chatID: string): Promise<Users[]> {
+  async getChatMembers(chatUUID: string): Promise<UsersOutputDTO[]> {
     const userIDs: ChatMembers[] = await this.pgService.find({
       tableName: this.tableName,
-      where: { chatID },
+      where: { chatUUID },
     });
     return Promise.all(
       userIDs.map(async (user) => {
-        return this.usersService.findOneByID(user.userID);
+        return this.usersService.findOneByEmail(user.userEmail);
       }),
     );
   }
 
-  async getMyChats(userID: string): Promise<ChatMembers[]> {
+  async getMyChats(userEmail: string): Promise<ChatMembers[]> {
     return await this.pgService.find({
       tableName: this.tableName,
-      where: { userID },
+      where: { userEmail },
     });
   }
 
-  async addUserToChat({ userID, chatID }: ChatMembersDTO): Promise<void> {
+  async addUserToChat({ userEmail, chatUUID }: ChatMembersDTO): Promise<void> {
     await this.pgService.create({
       tableName: this.tableName,
-      values: [{ userID, chatID, chatMembersID: uuid() }],
+      values: [{ userEmail, chatUUID }],
     });
   }
 
-  async removeUserFromChat({ userID, chatID }: ChatMembersDTO): Promise<void> {
+  async removeUserFromChat({
+    userEmail,
+    chatUUID,
+  }: ChatMembersDTO): Promise<void> {
     await this.pgService.delete({
       tableName: this.tableName,
-      where: { userID, chatID },
+      where: { userEmail, chatUUID },
     });
   }
 }

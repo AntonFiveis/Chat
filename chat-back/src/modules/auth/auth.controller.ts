@@ -74,7 +74,7 @@ export class AuthController {
     @Req() { user }: JwtValidationOutput,
     @Body('fingerprint') fingerprint: string,
   ): Promise<void> {
-    await this.authService.logout(user.userID, fingerprint);
+    await this.authService.logout(user.email, fingerprint);
   }
 
   @Post('refresh')

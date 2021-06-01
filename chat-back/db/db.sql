@@ -27,7 +27,8 @@ CREATE TABLE "Chats"(
 "chatUUID" UUID PRIMARY KEY ,
 "isGroup" BOOLEAN,
 "chatName" VARCHAR,
-"photo" VARCHAR
+"photo" VARCHAR,
+"ownerEmail" VARCHAR NOT NULL REFERENCES "Users"("email") ON DELETE CASCADE,
 );
 CREATE TABLE "Messages"(
 "messageUUID" UUID PRIMARY KEY,

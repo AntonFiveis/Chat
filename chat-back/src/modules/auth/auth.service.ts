@@ -20,19 +20,19 @@ export class AuthService {
   private tableName = 'RefreshTokens';
 
   async signUp(userDTO: UsersDto, fingerprint: string): Promise<TokensPair> {
-    const userID = await this.usersService.createNewUser(userDTO);
-    return await this.createTokenPair(userID, fingerprint);
+    const email = await this.usersService.createNewUser(userDTO);
+    return await this.createTokenPair(email, fingerprint);
   }
 
   async createTokenPair(
-    userID: string,
+    email: string,
     fingerprint: string,
   ): Promise<TokensPair> {
-    const accessToken = this.generateAccessToken(userID);
+    const accessToken = this.generateAccessToken(email);
     const expiresIn = Date.now() + 1000 * 60 * 60 * 24 * 60; // 60 days
     const tokens = (
       await this.pgService.useQuery(
-        `SELECT * FROM "RefreshTokens" where "userID" = '${userID}' ORDER BY "expiresIn" `,
+        `SELECT * FROM "RefreshTokens" where "userEmail" = '${email}' ORDER BY "expiresIn" `,
       )
     ).rows;
     if (tokens.length > 4) {
@@ -44,33 +44,35 @@ export class AuthService {
     const refreshToken = (
       await this.pgService.create({
         tableName: this.tableName,
-        values: [{ refreshToken: uuid(), fingerprint, expiresIn, userID }],
+        values: [
+          { refreshToken: uuid(), fingerprint, expiresIn, userEmail: email },
+        ],
         returning: 'refreshToken',
       })
     ).rows[0].refreshToken;
     return { accessToken, refreshToken };
   }
 
-  generateAccessToken(userID: string): string {
-    return this.jwtService.sign({ userID });
+  generateAccessToken(email: string): string {
+    return this.jwtService.sign({ email });
   }
 
   async login(
     { email, password }: AuthCredentialsDTO,
     fingerprint: string,
   ): Promise<TokensPair> {
-    const user: Users = await this.usersService.findOneByEmail(email);
+    const user: Users = await this.usersService.findOneByEmailWithPassword(email);
     try {
       await this.pgService.delete({
         tableName: this.tableName,
         cascade: true,
-        where: { userID: user.userID, fingerprint },
+        where: { userEmail: user.email, fingerprint },
       });
     } catch (e) {
       console.log(e);
     }
     if (await this.validatePassword(user, password))
-      return this.createTokenPair(user.userID, fingerprint);
+      return this.createTokenPair(user.email, fingerprint);
     else throw new UnauthorizedException('Incorrect credentials');
   }
 
@@ -81,10 +83,10 @@ export class AuthService {
     return (await bcrypt.hash(pass, salt)) === password;
   }
 
-  async logout(userID: string, fingerprint: string): Promise<void> {
+  async logout(userEmail: string, fingerprint: string): Promise<void> {
     await this.pgService.delete({
       tableName: this.tableName,
-      where: { userID, fingerprint },
+      where: { userEmail, fingerprint },
     });
   }
 
@@ -98,6 +100,9 @@ export class AuthService {
       )
     ).rows[0];
     if (!refreshTokenEntity) throw new UnauthorizedException('Invalid session');
-    return await this.createTokenPair(refreshTokenEntity.userID, fingerprint);
+    return await this.createTokenPair(
+      refreshTokenEntity.userEmail,
+      fingerprint,
+    );
   }
 }

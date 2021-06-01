@@ -12,12 +12,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: { userID: string }): Promise<ValidationResponse> {
-    return { userID: payload.userID };
+  async validate(payload: { email: string }): Promise<ValidationResponse> {
+    return { email: payload.email };
   }
 }
 interface ValidationResponse {
-  userID: string;
+  email: string;
 }
 
 export interface JwtValidationOutput {

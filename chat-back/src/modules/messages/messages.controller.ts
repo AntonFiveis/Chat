@@ -9,8 +9,8 @@ export class MessagesController {
   @Get()
   async get50MessagesFromBothSides(
     @Query('date') date: Date,
-    @Query('chatID') chatID: string,
+    @Query('chatUUID') chatUUID: string,
   ): Promise<Messages[]> {
-    return this.messagesService.get50MessagesFromBothSidesOf(chatID, date);
+    return this.messagesService.get50MessagesFromBothSidesOf(chatUUID, date);
   }
 }

@@ -1,4 +1,4 @@
 export interface ChatMembersDTO {
-  userID: string;
-  chatID: string;
+  userEmail: string;
+  chatUUID: string;
 }

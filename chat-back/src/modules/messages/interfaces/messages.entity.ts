@@ -1,9 +1,9 @@
 export default interface Messages {
-  messagesID: string;
-  chatID: string;
+  messagesUUID: string;
+  chatUUID: string;
   text: string;
   date: Date;
-  userID: string;
+  userEmail: string;
   checked: boolean;
   photo: string;
 }

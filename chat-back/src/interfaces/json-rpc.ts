@@ -28,6 +28,7 @@ export interface NotificationPayload {
   ok: boolean;
   code?: number;
   message?: string;
+  chats?: unknown;
 }
 
 export enum JsonRpcErrorCodes {
