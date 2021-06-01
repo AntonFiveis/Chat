@@ -1,6 +1,7 @@
 module.exports = {
     "env": {
         "node": true,
+        // todo: why node in front app?
         "browser": true,
         "es6": true,
         "commonjs": true
