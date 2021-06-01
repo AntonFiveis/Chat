@@ -1,32 +1,30 @@
-CREATE DATABASE "chat";
 
 CREATE TABLE "Users"(
-"userUUID" UUID PRIMARY KEY,
+"email" VARCHAR PRIMARY KEY,
 "name" VARCHAR,
-"nickname" VARCHAR UNIQUE NOT NULL ,
-"email" VARCHAR UNIQUE NOT NULL ,
-"phone" VARCHAR UNIQUE NOT NULL ,
+"nickname" VARCHAR NOT NULL,
+"phone" VARCHAR NOT NULL,
 "password" VARCHAR,
 "salt" VARCHAR,
 "photo" VARCHAR
 );
 
 CREATE TABLE "RefreshTokens"(
-"refreshTokenUUID" UUID PRIMARY KEY,
-"userUUID" UUID REFERENCES "Users"("userUUID") ON DELETE CASCADE NOT NULL ,
+"refreshToken" UUID NOT NULL,
+"userEmail" VARCHAR REFERENCES "Users"("email") ON DELETE CASCADE  ,
 "fingerprint" VARCHAR NOT NULL,
-"expiresIn" BIGINT,
-UNIQUE ("userID", "fingerprint")
+"expiresIn" BIGINT NOT NULL,
+PRIMARY KEY ("userEmail", "fingerprint")
 );
 
 CREATE TABLE "UsersContacts"(
-"userContactUUID" UUID PRIMARY KEY,
-"userUUID" UUID REFERENCES "Users"("userUUID") ON DELETE CASCADE NOT NULL ,
-"friendUserEmail" VARCHAR REFERENCES "Users"("email") ON DELETE CASCADE NOT NULL
+"userEmail" VARCHAR REFERENCES "Users"("email") ON DELETE CASCADE  ,
+"friendUserEmail" VARCHAR REFERENCES "Users"("email") ON DELETE CASCADE,
+PRIMARY KEY ("userEmail","friendUserEmail")
 );
 
 CREATE TABLE "Chats"(
-"chatUUID" UUID PRIMARY KEY,
+"chatUUID" UUID PRIMARY KEY ,
 "isGroup" BOOLEAN,
 "chatName" VARCHAR,
 "photo" VARCHAR
@@ -34,15 +32,15 @@ CREATE TABLE "Chats"(
 CREATE TABLE "Messages"(
 "messageUUID" UUID PRIMARY KEY,
 "text" TEXT,
-"date" DATE DEFAULT current_date ,
-"userUUID" UUID REFERENCES "Users"("userUUID") ON DELETE CASCADE ,
+"date" DATE NOT NULL DEFAULT current_date ,
+"userEmail" VARCHAR NOT NULL REFERENCES "Users"("email") ON DELETE CASCADE  ,
 "checked" BOOLEAN,
 "photo" VARCHAR
 );
 
 CREATE TABLE "ChatMembers"(
-"chatMemberID" UUID PRIMARY KEY,
-"userUUID" UUID  REFERENCES "Users"("userUUID") ON DELETE CASCADE ,
-"chatUUID" UUID REFERENCES "Chats"("chatUUID") ON DELETE CASCADE ,
-"lastMessageUUID" UUID REFERENCES "Messages"("messageUUID") ON DELETE CASCADE
+"userEmail" VARCHAR NOT NULL REFERENCES "Users"("email") ON DELETE CASCADE  ,
+"chatUUID" UUID NOT NULL REFERENCES "Chats"("chatUUID") ON DELETE CASCADE ,
+"lastMessageUUID" UUID NOT NULL REFERENCES "Messages"("messageUUID") ON DELETE CASCADE,
+PRIMARY KEY ("userEmail", "chatUUID")
 );
