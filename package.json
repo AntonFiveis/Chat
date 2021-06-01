@@ -53,6 +53,7 @@
     "lint:server": "yarn --cwd ./chat-back lint:write",
     "lint:client": "yarn --cwd ./FrontEnd lint:write",
     "lint:all": "yarn lint:server && yarn lint:client",
+//    todo: not use cd in npm scripts
     "start:client": "cd FrontEnd && yarn start",
     "start:server": "cd FrontEnd && yarn start:dev"
   },
