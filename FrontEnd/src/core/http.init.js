@@ -2,6 +2,7 @@ import axios from 'axios';
 import { userApi } from '../utils/api';
 class Http {
   constructor(status) {
+    // todo: use es6 status?.auth ?? false
     this.isAuth = status && status.auth ? status.auth : false;
     this.instance = axios.create({
       baseURL: process.env.API_URL,
@@ -46,6 +47,8 @@ class Http {
     return this.instance;
   }
 }
+
+// todo: axios.defaults could eliminate almost all that code
 
 export default function request(auth = false) {
   return new Http({ auth });

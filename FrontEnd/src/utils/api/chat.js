@@ -1,4 +1,5 @@
 import { request } from '../../core';
+// todo: use aliases
 
 export default {
   postChatPhoto: async (file, chatID) => {
