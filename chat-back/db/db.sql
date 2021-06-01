@@ -1,48 +1,48 @@
 CREATE DATABASE "chat";
 
 CREATE TABLE "Users"(
-"userID" UUID PRIMARY KEY,
+"userUUID" UUID PRIMARY KEY,
 "name" VARCHAR,
-"nickname" VARCHAR UNIQUE,
-"email" VARCHAR UNIQUE,
-"phone" VARCHAR UNIQUE ,
+"nickname" VARCHAR UNIQUE NOT NULL ,
+"email" VARCHAR UNIQUE NOT NULL ,
+"phone" VARCHAR UNIQUE NOT NULL ,
 "password" VARCHAR,
 "salt" VARCHAR,
 "photo" VARCHAR
 );
 
 CREATE TABLE "RefreshTokens"(
-"refreshToken" UUID PRIMARY KEY,
-"userID" UUID REFERENCES "Users"("userID") ON DELETE CASCADE,
-"fingerprint" VARCHAR,
+"refreshTokenUUID" UUID PRIMARY KEY,
+"userUUID" UUID REFERENCES "Users"("userUUID") ON DELETE CASCADE NOT NULL ,
+"fingerprint" VARCHAR NOT NULL,
 "expiresIn" BIGINT,
 UNIQUE ("userID", "fingerprint")
 );
 
 CREATE TABLE "UsersContacts"(
-"userContactID" UUID PRIMARY KEY,
-"userID" UUID REFERENCES "Users"("userID") ON DELETE CASCADE,
-"friendUserEmail" VARCHAR REFERENCES "Users"("email") ON DELETE CASCADE
+"userContactUUID" UUID PRIMARY KEY,
+"userUUID" UUID REFERENCES "Users"("userUUID") ON DELETE CASCADE NOT NULL ,
+"friendUserEmail" VARCHAR REFERENCES "Users"("email") ON DELETE CASCADE NOT NULL
 );
 
 CREATE TABLE "Chats"(
-"chatID" UUID PRIMARY KEY,
+"chatUUID" UUID PRIMARY KEY,
 "isGroup" BOOLEAN,
 "chatName" VARCHAR,
 "photo" VARCHAR
 );
 CREATE TABLE "Messages"(
-"messageID" UUID PRIMARY KEY,
+"messageUUID" UUID PRIMARY KEY,
 "text" TEXT,
 "date" DATE DEFAULT current_date ,
-"userID" UUID REFERENCES "Users"("userID") ON DELETE CASCADE ,
+"userUUID" UUID REFERENCES "Users"("userUUID") ON DELETE CASCADE ,
 "checked" BOOLEAN,
 "photo" VARCHAR
 );
 
 CREATE TABLE "ChatMembers"(
 "chatMemberID" UUID PRIMARY KEY,
-"userID" UUID  REFERENCES "Users"("userID") ON DELETE CASCADE ,
-"chatID" UUID REFERENCES "Chats"("chatID") ON DELETE CASCADE ,
-"lastMessageID" UUID REFERENCES "Messages"("messageID") ON DELETE CASCADE
+"userUUID" UUID  REFERENCES "Users"("userUUID") ON DELETE CASCADE ,
+"chatUUID" UUID REFERENCES "Chats"("chatUUID") ON DELETE CASCADE ,
+"lastMessageUUID" UUID REFERENCES "Messages"("messageUUID") ON DELETE CASCADE
 );
