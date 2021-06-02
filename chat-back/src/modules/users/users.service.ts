@@ -29,6 +29,13 @@ export class UsersService {
     return this.splitUser(res);
   }
 
+  async findByEmail(email: string): Promise<UsersOutputDTO[]> {
+    const res = await this.pgService.useQuery(
+      `SELECT * FROM "Users" WHERE "email" LIKE '${email}%'`,
+    );
+    return res.rows.map((user) => this.splitUser(user));
+  }
+
   async findOneByEmailWithPassword(email: string): Promise<Users> {
     return await this.pgService.findOne({
       tableName: this.tableName,
@@ -37,19 +44,17 @@ export class UsersService {
   }
 
   async findByNickname(nickname: string): Promise<UsersOutputDTO[]> {
-    const res: Users[] = await this.pgService.find({
-      tableName: this.tableName,
-      where: { nickname },
-    });
-    return res.map((user) => this.splitUser(user));
+    const res = await this.pgService.useQuery(
+      `SELECT * FROM "Users" WHERE "nickname" LIKE '${nickname}%'`,
+    );
+    return res.rows.map((user) => this.splitUser(user));
   }
 
   async findByPhone(phone: string): Promise<UsersOutputDTO[]> {
-    const res: Users[] = await this.pgService.find({
-      tableName: this.tableName,
-      where: { phone },
-    });
-    return res.map((user) => this.splitUser(user));
+    const res = await this.pgService.useQuery(
+      `SELECT * FROM "Users" WHERE "phone" LIKE '${phone}%'`,
+    );
+    return res.rows.map((user) => this.splitUser(user));
   }
 
   async createNewUser(userDTO: UsersDto): Promise<string> {
@@ -59,7 +64,7 @@ export class UsersService {
       await this.pgService.create({
         tableName: this.tableName,
         values: [{ ...userDTO, salt, password }],
-        returning: 'userID',
+        returning: 'email',
       })
     ).rows[0].email;
   }

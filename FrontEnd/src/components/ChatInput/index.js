@@ -7,10 +7,9 @@ import { Picker } from 'emoji-mart';
 
 import './ChatInput.scss';
 
-const ChatInput = (props) => {
+const ChatInput = ({ onSendMessage, currentDialogId }) => {
   const [value, setValue] = useState('');
   const [emojiPickerVisible, setShowEmojiPicker] = useState('');
-  const { onSendMessage, currentDialogId } = props;
 
   const toggleEmojiPicker = () => {
     setShowEmojiPicker(!emojiPickerVisible);
@@ -19,7 +18,7 @@ const ChatInput = (props) => {
   const handleSendMessage = (e) => {
     if (e.key === 'Enter') {
       console.log(value, currentDialogId);
-      onSendMessage(value, currentDialogId);
+      if (value !== '') onSendMessage(value, currentDialogId);
       setValue('');
     }
   };
@@ -66,7 +65,12 @@ const ChatInput = (props) => {
         value={value}
       />
       <div className="chat-input__actions">
-        <Button type="link" shape="circle" icon={<ArrowRightOutlined />} />
+        <Button
+          type="link"
+          shape="circle"
+          onClick={() => handleSendMessage({ key: 'Enter' })}
+          icon={<ArrowRightOutlined />}
+        />
       </div>
     </div>
   );

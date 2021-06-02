@@ -8,6 +8,7 @@ import { Messages as BaseMessages } from '../components';
 
 const Dialogs = ({
   currentDialogId,
+  dialogs,
   fetchMessages,
   addMessage,
   items,
@@ -24,26 +25,27 @@ const Dialogs = ({
     if (currentDialogId) {
       fetchMessages(currentDialogId);
     }
-    socket.on('SERVER:NEW_MESSAGE', onNewMessage);
+    socket.on('ADD_MESSAGE', onNewMessage);
     return () => socket.removeListener('SERVER:NEW_MESSAGE', onNewMessage);
   }, [currentDialogId]);
 
   useEffect(() => {
     messagesRef.current.scrollTo(0, 999999);
   }, [items]);
-
   return (
     <BaseMessages
       user={user}
       blockRef={messagesRef}
       items={items}
       isLoading={isLoading && !user}
+      currentDialog={dialogs.items.find((c) => c.chatUUID === currentDialogId)}
     />
   );
 };
 
 export default connect(
   ({ dialogs, messages, user }) => ({
+    dialogs: dialogs,
     currentDialogId: dialogs.currentDialogId,
     items: messages.items,
     isLoading: messages.isLoading,

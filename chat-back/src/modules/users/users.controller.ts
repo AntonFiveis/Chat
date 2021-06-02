@@ -42,9 +42,12 @@ export class UsersController {
     await this.usersService.deleteUser(user.email);
   }
   @Get('/email')
-  async getUserByEmail(@Query('email') email: string): Promise<UsersOutputDTO> {
-    return this.usersService.findOneByEmail(email);
+  async getUsersByEmail(
+    @Query('email') email: string,
+  ): Promise<UsersOutputDTO[]> {
+    return this.usersService.findByEmail(email);
   }
+
   @Get('/phone')
   async getUsersByPhone(
     @Query('phone') phone: string,

@@ -7,7 +7,7 @@ import { UsersOutputDTO } from '../users/interfaces/users.output.dto';
 export class ChatMembersController {
   constructor(private chatMembersService: ChatMembersService) {}
 
-  @Get('/:chatID')
+  @Get('/:chatUUID')
   async getChatMembers(
     @Param('chatUUID') chatUUID: string,
   ): Promise<UsersOutputDTO[]> {

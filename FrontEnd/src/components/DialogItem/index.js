@@ -13,34 +13,55 @@ const getMessageTime = (createdAt) => {
 };
 
 const DialogItem = ({
-  id,
-  user,
-  created_at,
-  text,
+  chatUUID,
+  messages,
+  chatMembers,
   unread,
-  isMe,
+  isGroup,
+  chatName,
+  photo,
+  userEmail,
   currentDialogId,
   onSelect,
 }) => (
-  <Link to={`/dialog/${id}`}>
+  <Link to={`/dialog/${chatUUID}`}>
     <div
       className={classNames('dialogs__item', {
-        'dialogs__item--online': user.isOnline,
-        'dialogs__item--selected': currentDialogId === id,
+        'dialogs__item--online': false,
+        // user.isOnline,
+        'dialogs__item--selected': currentDialogId === chatUUID,
       })}
-      onClick={onSelect.bind(this, id)}
+      onClick={() => onSelect(chatUUID)}
     >
       <div className="dialogs__item-avatar">
-        <Avatar user={user} />
+        <Avatar
+          user={
+            isGroup
+              ? { photo, name: chatName, uuid: chatUUID }
+              : {
+                  ...chatMembers.find((cm) => cm.email !== userEmail),
+                  uuid: chatUUID,
+                }
+          }
+        />
       </div>
       <div className="dialogs__item-info">
         <div className="dialogs__item-info-top">
-          <b>{user.fullname}</b>
-          <span>{getMessageTime(created_at)}</span>
+          <b>{chatName}</b>
+          <span>
+            {messages.length
+              ? getMessageTime(messages[messages.length - 1].date)
+              : null}
+          </span>
         </div>
         <div className="dialogs__item-info-bottom">
-          <p>{text}</p>
-          {isMe && <IconReaded isMe={true} isReaded={true} />}
+          <p>
+            {messages.length
+              ? messages[messages.length - 1].text ??
+                messages[messages.length - 1].photo
+              : null}
+          </p>
+          {<IconReaded isMe={true} isReaded={true} />}
           {unread > 0 && (
             <div className="dialogs__item-info-bottom-count">
               {unread > 9 ? '+9' : unread}

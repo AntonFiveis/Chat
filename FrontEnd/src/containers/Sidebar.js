@@ -2,8 +2,8 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { userApi, chatsApi } from '../utils/api';
-
+import { userApi } from '../utils/api';
+import socket from '../core/socket';
 import { Sidebar } from '../components';
 
 const SidebarContainer = ({ user }) => {
@@ -12,7 +12,7 @@ const SidebarContainer = ({ user }) => {
   const [messageText, setMessageText] = useState('');
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState(false);
+  const [selectedUsers, setSelectedUsers] = useState([]);
 
   const onClose = () => {
     setVisible(false);
@@ -22,42 +22,69 @@ const SidebarContainer = ({ user }) => {
     setVisible(true);
   };
 
-  const onSearch = (value) => {
+  const onSearch = async (value) => {
     setIsLoading(true);
-    userApi
-      .findUser(value)
-      .then(({ data }) => {
-        setUsers(data);
-        setIsLoading(true);
-      })
-      .catch(() => {
-        setIsLoading(false);
-      });
+    const { data } = await userApi.findUsersByEmail(value);
+    // .then(({ data }) => {
+    //   console.log(data);
+    //   setUsers(data);
+    //   console.log(users);
+    //   setIsLoading(false);
+    // })
+    // .catch(() => {
+    //   setUsers([]);
+    //   setIsLoading(true);
+    // });
+    const index = data.findIndex((u) => u.email == user.email);
+    if (index !== -1) data.splice(index, 1);
+    setUsers(data);
+    setIsLoading(false);
   };
 
   const onAddDialog = () => {
-    console.log('createDialig');
-    chatsApi
-      .create({
-        partner: selectedUserId,
-        text: messageText,
+    console.log('createDialog');
+    const usersEmails = selectedUsers.map((us) => us.email);
+    socket
+      .call('ADD_CHAT', {
+        chatName: 'New Chat',
+        isGroup: true,
+        users: [...usersEmails, user.email],
       })
-      .then(onClose)
-      .catch(() => {
-        setIsLoading(false);
+      .then((res) => {
+        if (res.ok) onClose();
+        else setIsLoading(false);
       });
+    // chatsApi
+    //   .create({
+    //     partner: selectedUserId,
+    //     text: messageText,
+    //   })
+    //   .then(onClose)
+    //   .catch(() => {
+    //     setIsLoading(false);
+    //   });
   };
 
-  const handleChangeInput = (value) => {
-    setInputValue(value);
+  const handleChangeInput = async (value) => {
+    setInputValue(value.target.value);
+    await onSearch(value.target.value);
   };
 
   const onChangeTextArea = (e) => {
     setMessageText(e.target.value);
   };
 
-  const onSelectUser = (userId) => {
-    setSelectedUserId(userId);
+  const onSelectUser = (selUser) => {
+    const index = selectedUsers.findIndex((u) => u.email === selUser.email);
+    setUsers(users);
+    if (index === -1) {
+      setSelectedUsers([...selectedUsers, selUser]);
+    } else {
+      const selUsers = selectedUsers;
+      selUsers.splice(index, 1);
+      console.log(selUsers);
+      setSelectedUsers(selUsers);
+    }
   };
 
   return (
@@ -74,7 +101,7 @@ const SidebarContainer = ({ user }) => {
       onModalOk={onAddDialog}
       onChangeTextArea={onChangeTextArea}
       messageText={messageText}
-      selectedUserId={selectedUserId}
+      selectedUsers={selectedUsers}
       users={users}
     />
   );

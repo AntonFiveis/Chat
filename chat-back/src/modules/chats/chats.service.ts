@@ -7,7 +7,7 @@ import { PgService } from '../pg/pg.service';
 import { ChatsDTO, ChatsUpdates } from './interfaces/chats.dto';
 import Chats from './interfaces/chats.entity';
 import { MessagesService } from '../messages/messages.service';
-import { ChatsWithMessages } from './interfaces/chats.output.dto';
+import { ChatsWithMessagesAndMembers } from './interfaces/chats.output.dto';
 import * as fs from 'fs';
 import { ImageMinService } from '../image-min/image-min.service';
 import { Readable } from 'stream';
@@ -58,13 +58,13 @@ export class ChatsService {
     return name;
   }
 
-  async getMyChats(userEmail: string): Promise<ChatsWithMessages[]> {
+  async getMyChats(userEmail: string): Promise<ChatsWithMessagesAndMembers[]> {
     const chatIDs: ChatMembers[] = await this.chatMembersService.getMyChats(
       userEmail,
     );
     return Promise.all(
       chatIDs.map(async (chat) => {
-        return this.getChatWithMessages(chat.chatUUID);
+        return this.getChatWithMessagesAndMembers(chat.chatUUID);
       }),
     );
   }
@@ -82,11 +82,11 @@ export class ChatsService {
     });
   }
 
-  async createChat(chatDTO: ChatsDTO): Promise<string> {
+  async createChat(chatDTO: ChatsDTO, email: string): Promise<string> {
     const res = await this.pgService.create({
       tableName: this.tableName,
-      values: [{ ...chatDTO, chatUUID: uuid() }],
-      returning: 'chatID',
+      values: [{ ...chatDTO, chatUUID: uuid(), ownerEmail: email }],
+      returning: 'chatUUID',
     });
     return res.rows[0].chatUUID;
   }
@@ -106,12 +106,16 @@ export class ChatsService {
   }
   // async updateChatPhoto(chatID: string, photo: File): Promise<void> {}
 
-  async getChatWithMessages(chatUUID: string): Promise<ChatsWithMessages> {
+  async getChatWithMessagesAndMembers(
+    chatUUID: string,
+  ): Promise<ChatsWithMessagesAndMembers> {
     const chat: Chats = await this.pgService.findOne({
       tableName: this.tableName,
       where: { chatUUID },
     });
     const messages = await this.messagesService.getLast50messages(chatUUID);
-    return { ...chat, messages };
+
+    const chatMembers = await this.chatMembersService.getChatMembers(chatUUID);
+    return { ...chat, messages, chatMembers };
   }
 }

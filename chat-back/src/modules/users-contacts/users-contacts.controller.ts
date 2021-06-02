@@ -11,7 +11,7 @@ import { UsersContactsService } from './users-contacts.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { JwtValidationOutput } from '../auth/jwt.strategy';
 import { Users } from '../users/interfaces/users.entity';
-import {UsersOutputDTO} from "../users/interfaces/users.output.dto";
+import { UsersOutputDTO } from '../users/interfaces/users.output.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('users-contacts')

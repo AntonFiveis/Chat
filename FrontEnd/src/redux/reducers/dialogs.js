@@ -16,6 +16,11 @@ export default (state = initialState, { type, payload }) => {
         ...state,
         currentDialogId: payload,
       };
+    case 'DIALOGS:ADD_ITEM':
+      return {
+        ...state,
+        items: [...state.items, payload],
+      };
     default:
       return state;
   }

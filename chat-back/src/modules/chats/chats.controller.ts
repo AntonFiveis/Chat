@@ -15,7 +15,7 @@ import { ChatsService } from './chats.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtValidationOutput } from '../auth/jwt.strategy';
-import { ChatsWithMessages } from './interfaces/chats.output.dto';
+import { ChatsWithMessagesAndMembers } from './interfaces/chats.output.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('chats')
@@ -32,7 +32,7 @@ export class ChatsController {
   @Get()
   async getMyChats(
     @Request() { user }: JwtValidationOutput,
-  ): Promise<ChatsWithMessages[]> {
+  ): Promise<ChatsWithMessagesAndMembers[]> {
     return this.chatsService.getMyChats(user.email);
   }
 

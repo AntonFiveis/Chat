@@ -55,14 +55,17 @@ export class WsSessionsGateway
       const chatMembers = await this.chatMembersService.getChatMembers(
         messagesDTO.chatUUID,
       );
-      const date = await this.messagesService.createNewMessage(messagesDTO);
+      const {
+        date,
+        messagesUUID,
+      } = await this.messagesService.createNewMessage(messagesDTO);
       chatMembers.forEach((cm) => {
         const sessions: WsSession[] = this.wsSessionsService.findSessionsByUserEmail(
           cm.email,
         );
         this.wsSessionsService.sendResponse(
           sessions,
-          { ...messagesDTO, date },
+          { ...messagesDTO, date, messagesUUID },
           'ADD_MESSAGE',
         );
       });
@@ -80,20 +83,24 @@ export class WsSessionsGateway
     const session = this.wsSessionsService.findSession(socket);
     try {
       if (!session) throw new Error();
-      this.jwtService.verify(session.accessToken);
-      const chatUUID = await this.chatsService.createChat(chatDTO);
-
+      const res = this.jwtService.verify(session.accessToken);
+      const chatUUID = await this.chatsService.createChat(chatDTO, res.email);
       for (const user of users) {
         await this.chatMembersService.addUserToChat({
           userEmail: user,
           chatUUID,
         });
+      }
+      const chatMembers = await this.chatMembersService.getChatMembers(
+        chatUUID,
+      );
+      for (const user of users) {
         const userSessions: WsSession[] = this.wsSessionsService.findSessionsByUserEmail(
           user,
         );
         this.wsSessionsService.sendResponse(
           userSessions,
-          { ...chatDTO, chatUUID },
+          { ...chatDTO, chatUUID, messages: [], chatMembers },
           'ADD_CHAT',
         );
       }
@@ -119,7 +126,7 @@ export class WsSessionsGateway
         chatMembersDTO.userEmail,
       );
       if (!newChatMemberSessions) return { ok: true };
-      const chatWithMessages = this.chatsService.getChatWithMessages(
+      const chatWithMessages = this.chatsService.getChatWithMessagesAndMembers(
         chatMembersDTO.chatUUID,
       );
       this.wsSessionsService.sendResponse(
@@ -168,7 +175,6 @@ export class WsSessionsGateway
     const accessToken = cookie.parse(
       request.headers.cookie ? request.headers.cookie : '',
     ).accessToken;
-
     const sendResponse = (payload: NotificationPayload): void => {
       client.send(
         JSON.stringify(generateJsonRpcNotification('CONNECT', payload)),
@@ -179,7 +185,6 @@ export class WsSessionsGateway
         throw new Error();
       }
       const res = this.jwtService.verify(accessToken);
-
       const session: WsSession = {
         accessToken,
         userEmail: res.email,

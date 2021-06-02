@@ -13,12 +13,12 @@ export class ChatMembersService {
   private tableName = 'ChatMembers';
 
   async getChatMembers(chatUUID: string): Promise<UsersOutputDTO[]> {
-    const userIDs: ChatMembers[] = await this.pgService.find({
+    const userEmails: ChatMembers[] = await this.pgService.find({
       tableName: this.tableName,
       where: { chatUUID },
     });
     return Promise.all(
-      userIDs.map(async (user) => {
+      userEmails.map(async (user) => {
         return this.usersService.findOneByEmail(user.userEmail);
       }),
     );

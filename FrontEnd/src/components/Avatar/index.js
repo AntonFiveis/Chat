@@ -1,19 +1,16 @@
 import React from 'react';
+import { v4 as uuid } from 'uuid';
 import { generateAvatarFromHash } from '../../utils/helpers';
 import './Avatar.scss';
 
 const Avatar = ({ user }) => {
-  if (user.avatar) {
+  if (user.photo) {
     return (
-      <img
-        className="avatar"
-        src={user.avatar}
-        alt={`Avatar ${user.fullname}`}
-      />
+      <img className="avatar" src={user.avatar} alt={`Avatar ${user.name}`} />
     );
   } else {
-    const { color, colorLighten } = generateAvatarFromHash(user.id);
-    const firstChar = user.fullname[0].toUpperCase();
+    const { color, colorLighten } = generateAvatarFromHash(uuid());
+    const firstChar = user.name[0].toUpperCase();
     return (
       <div
         style={{

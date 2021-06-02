@@ -7,31 +7,25 @@ import socket from '../core/socket';
 import { Dialogs as BaseDialogs } from '../components';
 
 const Dialogs = ({
-  fetchDialogs,
+  addMessageToDialog,
+  setDialogs,
   currentDialogId,
   setCurrentDialogId,
+  addDialog,
   items,
-  userId,
+  userEmail,
 }) => {
   const [inputValue, setValue] = useState('');
-  const [filtred, setFiltredItems] = useState(Array.from(items));
+  const [filtred, setFiltredItems] = useState(items);
 
   const onChangeInput = (value = '') => {
-    console.log('value before', value);
     setFiltredItems(
       items.filter(
         (dialog) =>
-          dialog.user.fullname.toLowerCase().indexOf(value.toLowerCase()) >=
-            0 ||
-          dialog.parnter.fullname.toLowerCase().indexOf(value.toLowerCase()) >=
-            0,
+          dialog.chatName.toLowerCase().indexOf(value.toLowerCase()) >= 0,
       ),
     );
     setValue(value);
-  };
-
-  const onNewDialog = () => {
-    fetchDialogs();
   };
 
   useEffect(() => {
@@ -41,23 +35,22 @@ const Dialogs = ({
   }, [items]);
 
   useEffect(() => {
-    if (!items.length) {
-      fetchDialogs();
-    } else {
-      setFiltredItems(items);
-    }
-    // eslint-disable-next-line no-unused-vars
-    socket.on('SERVER:DIALOG_CREATED', onNewDialog);
-    socket.on('SERVER:NEW_MESSAGE', onNewDialog);
+    socket.on('ADD_CHAT', (res) => {
+      addDialog(res);
+      setFiltredItems([...filtred, res]);
+    });
+    socket.on('CONNECT', (res) => setDialogs(res.chats));
+    socket.on('ADD_MESSAGE', (res) => addMessageToDialog(res));
     return () => {
-      socket.removeListener('SERVER:DIALOG_CREATED', onNewDialog);
-      socket.removeListener('SERVER:NEW_MESSAGE', onNewDialog);
+      socket.removeListener('ADD_CHAT');
+      socket.removeListener('CONNECT');
+      socket.removeListener('ADD_MESSAGE');
     };
   }, []);
 
   return (
     <BaseDialogs
-      userId={userId}
+      userEmail={userEmail}
       items={filtred}
       onSearch={onChangeInput}
       inputValue={inputValue}
@@ -67,4 +60,10 @@ const Dialogs = ({
   );
 };
 
-export default connect(({ dialogs }) => dialogs, dialogsActions)(Dialogs);
+export default connect(
+  ({ dialogs }) => ({
+    dialogs: dialogs,
+    items: dialogs.items,
+  }),
+  dialogsActions,
+)(Dialogs);

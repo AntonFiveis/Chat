@@ -28,20 +28,22 @@ CREATE TABLE "Chats"(
 "isGroup" BOOLEAN,
 "chatName" VARCHAR,
 "photo" VARCHAR,
-"ownerEmail" VARCHAR NOT NULL REFERENCES "Users"("email") ON DELETE CASCADE,
+"ownerEmail" VARCHAR NOT NULL REFERENCES "Users"("email") ON DELETE CASCADE
 );
 CREATE TABLE "Messages"(
-"messageUUID" UUID PRIMARY KEY,
+"messagesUUID" UUID PRIMARY KEY,
 "text" TEXT,
-"date" DATE NOT NULL DEFAULT current_date ,
+"date" timestamp NOT NULL DEFAULT localtimestamp ,
 "userEmail" VARCHAR NOT NULL REFERENCES "Users"("email") ON DELETE CASCADE  ,
+"chatUUID" UUID NOT NULL REFERENCES "Chats"("chatUUID") ON DELETE CASCADE,
 "checked" BOOLEAN,
 "photo" VARCHAR
 );
 
+
 CREATE TABLE "ChatMembers"(
 "userEmail" VARCHAR NOT NULL REFERENCES "Users"("email") ON DELETE CASCADE  ,
 "chatUUID" UUID NOT NULL REFERENCES "Chats"("chatUUID") ON DELETE CASCADE ,
-"lastMessageUUID" UUID NOT NULL REFERENCES "Messages"("messageUUID") ON DELETE CASCADE,
+"lastMessageUUID" UUID REFERENCES "Messages"("messageUUID") ON DELETE CASCADE,
 PRIMARY KEY ("userEmail", "chatUUID")
 );

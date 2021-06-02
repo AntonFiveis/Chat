@@ -6,18 +6,32 @@ const Status = ({ currentDialogId, user, dialogs }) => {
   if (!dialogs.length || !currentDialogId) {
     return null;
   }
-  const currentDialigObj = dialogs.filter(
-    (dialog) => dialog.id === currentDialogId,
-  )[0];
-  let partner = false;
-
-  if (currentDialigObj.author.id === user.id) {
-    partner = currentDialigObj.partner;
-  } else {
-    partner = currentDialigObj.author;
-  }
-
-  return <BaseStatus online={partner.isOnline} fullname={partner.fullname} />;
+  const currentDialogObj = dialogs.find(
+    (dialog) => dialog.chatUUID === currentDialogId,
+  );
+  console.log(user);
+  // let partner = false;
+  //
+  // if (currentDialogObj.ownerEmail === user.email) {
+  //   partner = currentDialogObj.partner;
+  // } else {
+  //   partner = currentDialogObj.author;
+  // }
+  if (currentDialogObj.isGroup)
+    return (
+      <BaseStatus
+        // online={false}
+        fullname={currentDialogObj.chatName}
+      />
+    );
+  else
+    return (
+      <BaseStatus
+        fullname={currentDialogObj.chatMembers.find(
+          (u) => u.email != user.email,
+        )}
+      />
+    );
 };
 
 export default connect(({ dialogs, user }) => ({

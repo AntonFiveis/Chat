@@ -4,7 +4,8 @@ export default {
   login: (postData) => request().post('/api/auth/login', postData),
   register: (postData) => request().post('/api/auth/signup', postData),
   getMe: () => request(true).get('/api/users/me'),
-  findUser: (value) => request(true).get('/users/find?=' + value),
+  findUsersByEmail: (value) =>
+    request(true).get('/api/users/email', { params: { email: value } }),
   logout: async () => {
     await request(true).delete('/api/auth');
   },

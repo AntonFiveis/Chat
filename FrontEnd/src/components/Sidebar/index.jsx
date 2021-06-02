@@ -8,25 +8,59 @@ import { Dialogs } from '../../containers';
 const { Option } = Select;
 const { TextArea } = Input;
 
+const UserOptions = ({ users, selectedUsers, onSelectUser, user }) => {
+  return (
+    <>
+      {selectedUsers.length
+        ? selectedUsers.map((us) => (
+            <div key={us.email}>
+              <p>
+                {us.name}{' '}
+                <input
+                  type={'checkbox'}
+                  checked
+                  onChange={() => onSelectUser(us)}
+                />
+              </p>
+            </div>
+          ))
+        : null}
+
+      {users.length
+        ? users.map((us) =>
+            !selectedUsers.find((u) => u.email === us.email) ? (
+              <div key={us.email}>
+                <p>
+                  {us.name}
+                  <input
+                    type={'checkbox'}
+                    checked={false}
+                    onChange={() => onSelectUser(us)}
+                  />
+                </p>
+              </div>
+            ) : null,
+          )
+        : null}
+    </>
+  );
+};
+
 const Sidebar = ({
   user,
   visible,
   inputValue,
   messageText,
-  selectedUserId,
+  selectedUsers,
   isLoading,
   users,
   onShow,
   onClose,
-  onSearch,
   onChangeInput,
   onSelectUser,
   onChangeTextArea,
   onModalOk,
 }) => {
-  const options = users.map((user) => (
-    <Option key={user.id}>{user.fullname}</Option>
-  ));
   return (
     <div className="chat__sidebar">
       <div className="chat__sidebar-header">
@@ -42,7 +76,7 @@ const Sidebar = ({
         />
       </div>
       <div className="chat__sidebar-dialogs">
-        <Dialogs userId={user && user.id} />
+        <Dialogs userEmail={user && user.email} />
       </div>
       <Modal
         title="Создать диалог"
@@ -53,7 +87,6 @@ const Sidebar = ({
             Закрыть
           </Button>,
           <Button
-            disabled={!messageText}
             key="submit"
             type="primary"
             loading={isLoading}
@@ -65,33 +98,29 @@ const Sidebar = ({
       >
         <Form className="add-dialog-form">
           <Form.Item label="Введите имя пользователя или E-Mail">
-            <Select
-              showSearch
+            <input
               value={inputValue}
-              placeholder="Найти пользователя"
-              style={{ width: '100%' }}
-              defaultActiveFirstOption={false}
-              showArrow={false}
-              filterOption={false}
-              onSearch={onSearch}
               onChange={onChangeInput}
-              onSelect={onSelectUser}
-              notFoundContent={null}
-            >
-              {options}
-            </Select>
+              placeholder={'Найти пользователя'}
+              style={{ width: '100%' }}
+            />
+            <UserOptions
+              users={users}
+              selectedUsers={selectedUsers}
+              onSelectUser={onSelectUser}
+            />
           </Form.Item>
 
-          {selectedUserId && (
-            <Form.Item label="Введите текст сообщения">
-              <TextArea
-                placeholder=""
-                autoSize={{ minRows: 3, maxRows: 10 }}
-                onChange={onChangeTextArea}
-                value={messageText}
-              />
-            </Form.Item>
-          )}
+          {/*{selectedUserId && (*/}
+          {/*  <Form.Item label="Введите текст сообщения">*/}
+          {/*    <TextArea*/}
+          {/*      placeholder=""*/}
+          {/*      autoSize={{ minRows: 3, maxRows: 10 }}*/}
+          {/*      onChange={onChangeTextArea}*/}
+          {/*      value={messageText}*/}
+          {/*    />*/}
+          {/*  </Form.Item>*/}
+          {/*)}*/}
         </Form>
       </Modal>
     </div>

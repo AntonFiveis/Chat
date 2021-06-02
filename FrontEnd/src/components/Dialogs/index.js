@@ -1,7 +1,7 @@
 import React from 'react';
 import { Input, Empty } from 'antd';
 
-import orderBy from 'lodash/orderBy';
+// import orderBy from 'lodash/orderBy';
 
 import DialogItem from '../DialogItem';
 
@@ -9,7 +9,7 @@ import './Dialogs.scss';
 
 const Dialogs = ({
   items,
-  userId,
+  userEmail,
   onSearch,
   inputValue,
   currentDialogId,
@@ -24,15 +24,23 @@ const Dialogs = ({
       />
     </div>
     {items.length ? (
-      orderBy(items, ['created_at'], ['desc']).map((item) => (
-        <DialogItem
-          onSelect={onSelectDialog}
-          key={item.id}
-          isMe={item.user.id === userId}
-          currentDialogId={currentDialogId}
-          {...item}
-        />
-      ))
+      items
+        .sort((a, b) =>
+          a.messages.length && b.messages.length
+            ? Number(new Date(b.messages[b.messages.length - 1].date)) -
+              Number(new Date(a.messages[a.messages.length - 1].date))
+            : 0,
+        )
+        .map((item) => (
+          <DialogItem
+            onSelect={onSelectDialog}
+            key={item.chatUUID}
+            // isMe={item.user.id === userId}
+            userEmail={userEmail}
+            currentDialogId={currentDialogId}
+            {...item}
+          />
+        ))
     ) : (
       <Empty
         image={Empty.PRESENTED_IMAGE_SIMPLE}

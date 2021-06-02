@@ -13,4 +13,11 @@ export class MessagesController {
   ): Promise<Messages[]> {
     return this.messagesService.get50MessagesFromBothSidesOf(chatUUID, date);
   }
+  @Get('/unread-count')
+  async getUnreadMessCount(
+    @Query('lastMessageUUID') lastMessageUUID: string,
+    @Query('chatUUID') chatUUID: string,
+  ): Promise<number> {
+    return this.messagesService.getUnreadMessCount(chatUUID, lastMessageUUID);
+  }
 }

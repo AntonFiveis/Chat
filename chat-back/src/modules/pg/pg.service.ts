@@ -39,7 +39,7 @@ export class PgService {
             ')',
         )
         .join(',') +
-      (returning ? `RETURNING "${returning}"` : '');
+      (returning ? `RETURNING "${returning}"` : `RETURNING * `);
     try {
       return await this.pool.query(request, requestValues);
     } catch (error) {

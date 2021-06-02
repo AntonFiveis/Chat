@@ -7,7 +7,7 @@ import { Message } from '../';
 
 import './Messages.scss';
 
-const Messages = ({ blockRef, isLoading, items, user }) => {
+const Messages = ({ blockRef, isLoading, items, user, currentDialog }) => {
   return (
     <div
       ref={blockRef}
@@ -17,9 +17,19 @@ const Messages = ({ blockRef, isLoading, items, user }) => {
         <Spin size="large" tip="Загрузка сообщений..."></Spin>
       ) : items && !isLoading ? (
         items.length > 0 ? (
-          items.map((item) => (
-            <Message key={item.id} {...item} isMe={user.id === item.user.id} />
-          ))
+          items.map((item) => {
+            const sender = currentDialog.chatMembers.find(
+              (cm) => item.userEmail == cm.email,
+            );
+            return (
+              <Message
+                key={item.messagesUUID}
+                {...item}
+                isMe={user.email == sender.email}
+                user={sender}
+              />
+            );
+          })
         ) : (
           <Empty
             image={Empty.PRESENTED_IMAGE_SIMPLE}

@@ -1,19 +1,25 @@
 import { messagesApi } from '../../utils/api';
-
+let sended = false;
 const actions = {
   setMessages: (items) => ({
     type: 'MESSAGES:SET_ITEMS',
     payload: items,
   }),
-  addMessages: (message) => (dispatch, getState) => {
-    const { dialogs } = getState();
-    const { currentDialogId } = dialogs;
-
-    if (currentDialogId === message.dialog.id) {
-      dispatch({
-        type: 'MESSAGES:ADD_MESSAGE',
-        payload: message,
-      });
+  addMessage: (message) => (dispatch, getState) => {
+    if (!sended) {
+      const { dialogs } = getState();
+      const { currentDialogId } = dialogs;
+      if (currentDialogId === message.chatUUID) {
+        dispatch({
+          type: 'MESSAGES:ADD_MESSAGE',
+          payload: message,
+        });
+      }
+      sended = true;
+    } else {
+      setTimeout(() => {
+        sended = false;
+      }, 10);
     }
   },
   // eslint-disable-next-line no-unused-vars
@@ -24,16 +30,12 @@ const actions = {
     type: 'MESSAGES:SET_IS_LOADING',
     payload: bool,
   }),
-  fetchMessages: (dialogId) => (dispatch) => {
+  fetchMessages: (chatUUID) => (dispatch, getState) => {
     dispatch(actions.setIsLoading(true));
-    messagesApi
-      .getAllByDialogId(dialogId)
-      .then(({ data }) => {
-        dispatch(actions.setMessages(data));
-      })
-      .catch(() => {
-        dispatch(actions.setIsLoading(false));
-      });
+    const { dialogs } = getState();
+    const { items } = dialogs;
+    const messages = items.find((c) => c.chatUUID === chatUUID).messages;
+    dispatch({ type: 'MESSAGES:SET_ITEMS', payload: messages });
   },
 };
 

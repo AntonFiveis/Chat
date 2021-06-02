@@ -61,7 +61,9 @@ export class AuthService {
     { email, password }: AuthCredentialsDTO,
     fingerprint: string,
   ): Promise<TokensPair> {
-    const user: Users = await this.usersService.findOneByEmailWithPassword(email);
+    const user: Users = await this.usersService.findOneByEmailWithPassword(
+      email,
+    );
     try {
       await this.pgService.delete({
         tableName: this.tableName,
