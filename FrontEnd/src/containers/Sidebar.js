@@ -46,7 +46,7 @@ const SidebarContainer = ({ user }) => {
     const usersEmails = selectedUsers.map((us) => us.email);
     socket
       .call('ADD_CHAT', {
-        chatName: 'New Chat',
+        chatName: user.name,
         isGroup: true,
         users: [...usersEmails, user.email],
       })
