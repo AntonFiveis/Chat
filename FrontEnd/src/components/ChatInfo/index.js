@@ -12,7 +12,6 @@ const ChatInfo = ({
   // onNameChange,
   onSelectUser,
   users = [],
-  selectedUsers,
   onAddMembers,
   onMemberRemove,
   onAddFile,
@@ -70,11 +69,7 @@ const ChatInfo = ({
             value={value}
             onChange={({ target }) => onChangeValue(target.value)}
           />
-          <UserOptions
-            onSelectUser={onSelectUser}
-            users={users}
-            selectedUsers={selectedUsers}
-          />
+          <UserOptions onSelectUser={onSelectUser} users={users} />
           <Button onClick={onAddMembers}>Add Members</Button>
         </>
       ) : null}

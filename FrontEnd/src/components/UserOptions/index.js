@@ -1,38 +1,21 @@
 import React from 'react';
 import './UserOptions.scss';
-const UserOptions = ({ users, selectedUsers, onSelectUser }) => {
+const UserOptions = ({ users, onSelectUser }) => {
   return (
     <>
-      {selectedUsers.length
-        ? selectedUsers.map((us) => (
+      {users.length
+        ? users.map((us) => (
             <div className={'userOption'} key={us.email}>
               <div>{us.name} </div>
               <div>
                 <input
                   type={'checkbox'}
-                  checked
+                  checked={us.checked}
                   onChange={() => onSelectUser(us)}
                 />
               </div>
             </div>
           ))
-        : null}
-
-      {users.length
-        ? users.map((us) =>
-            !selectedUsers.find((u) => u.email === us.email) ? (
-              <div className={'userOption'} key={us.email}>
-                <div>{us.name}</div>
-                <div>
-                  <input
-                    type={'checkbox'}
-                    checked={false}
-                    onChange={() => onSelectUser(us)}
-                  />
-                </div>
-              </div>
-            ) : null,
-          )
         : null}
     </>
   );

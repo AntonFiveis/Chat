@@ -13,7 +13,6 @@ const Sidebar = ({
   user,
   visible,
   inputValue,
-  selectedUsers,
   isLoading,
   users,
   onShow,
@@ -67,11 +66,7 @@ const Sidebar = ({
               placeholder={'Найти пользователя'}
               style={{ width: '100%' }}
             />
-            <UserOptions
-              users={users}
-              selectedUsers={selectedUsers}
-              onSelectUser={onSelectUser}
-            />
+            <UserOptions users={users} onSelectUser={onSelectUser} />
           </Form.Item>
 
           {/*{selectedUserId && (*/}

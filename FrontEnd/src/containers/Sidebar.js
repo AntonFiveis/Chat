@@ -12,7 +12,6 @@ const SidebarContainer = ({ user }) => {
   const [chatName, setChatName] = useState('');
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedUsers, setSelectedUsers] = useState([]);
 
   const onClose = () => {
     setVisible(false);
@@ -37,12 +36,16 @@ const SidebarContainer = ({ user }) => {
     // });
     const index = data.findIndex((u) => u.email == user.email);
     if (index !== -1) data.splice(index, 1);
-    setUsers(data);
+    setUsers(
+      data.map((us) => {
+        return { ...us, checked: false };
+      }),
+    );
     setIsLoading(false);
   };
 
   const onAddDialog = () => {
-    const usersEmails = selectedUsers.map((us) => us.email);
+    const usersEmails = users.filter((us) => us.checked).map((us) => us.email);
 
     socket
       .call('ADD_CHAT', {
@@ -75,15 +78,10 @@ const SidebarContainer = ({ user }) => {
   };
 
   const onSelectUser = (selUser) => {
-    const index = selectedUsers.findIndex((u) => u.email === selUser.email);
-    if (index === -1) {
-      setSelectedUsers([...selectedUsers, selUser]);
-    } else {
-      const selUsers = selectedUsers;
-      selUsers.splice(index, 1);
-      console.log(selUsers);
-      setSelectedUsers(selUsers);
-    }
+    const index = users.findIndex((u) => u.email === selUser.email);
+    let selUsers = [...users];
+    selUsers[index].checked = !selUsers[index].checked;
+    setUsers(selUsers);
   };
 
   return (
@@ -100,7 +98,6 @@ const SidebarContainer = ({ user }) => {
       onModalOk={onAddDialog}
       onChangeTextArea={onChangeTextArea}
       chatName={chatName}
-      selectedUsers={selectedUsers}
       users={users}
     />
   );

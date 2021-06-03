@@ -15,7 +15,6 @@ const ChatInfo = ({
   const [editMode, setEditMode] = useState(false);
   const [photoFile, setPhotoFile] = useState(null);
   const [users, setUsers] = useState([]);
-  const [selectedUsers, setSelectedUsers] = useState([]);
   const [name, setName] = useState(currentChatObj.chatName);
   const [value, setValue] = useState('');
 
@@ -41,26 +40,26 @@ const ChatInfo = ({
   };
   const onSearch = async (val) => {
     setValue(val);
-    const { data: users } = await userApi.findUsersByEmail(val);
-    const userIndex = users.findIndex((u) => u.email == user.email);
-    users.splice(userIndex, 1);
-    setUsers(users);
+    const { data } = await userApi.findUsersByEmail(val);
+    const index = data.findIndex((u) => u.email == user.email);
+    if (index !== -1) data.splice(index, 1);
+    setUsers(
+      data.map((us) => {
+        return { ...us, checked: false };
+      }),
+    );
   };
   const onAddMembers = () => {
-    const chatMembersDTO = selectedUsers.map((su) => {
-      return { userEmail: su.email, chatUUID: currentDialogId };
+    const chatMembersDTO = users.map((u) => {
+      return { userEmail: u.email, chatUUID: currentDialogId };
     });
     socket.call('ADD_CHAT_MEMBERS', chatMembersDTO);
   };
   const onSelectUser = (selUser) => {
-    const index = selectedUsers.findIndex((u) => u.email === selUser.email);
-    if (index === -1) {
-      setSelectedUsers([...selectedUsers, selUser]);
-    } else {
-      const selUsers = selectedUsers;
-      selUsers.splice(index, 1);
-      setSelectedUsers(selUsers);
-    }
+    const index = users.findIndex((u) => u.email === selUser.email);
+    let selUsers = [...users];
+    selUsers[index].checked = !selUsers[index].checked;
+    setUsers(selUsers);
   };
   const onMemberRemove = (email) => {
     socket.call('REMOVE_CHAT_MEMBER', {
@@ -84,7 +83,6 @@ const ChatInfo = ({
       value={value}
       onChangeValue={onSearch}
       users={users}
-      selectedUsers={selectedUsers}
     />
   );
 };

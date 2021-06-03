@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { Modal } from 'antd';
 import { ChatInfo } from './index';
 import { useHistory } from 'react-router-dom';
-const Status = ({ currentDialogId, user, dialogs }) => {
+import { dialogsActions } from '../redux/actions';
+const Status = ({ currentDialogId, user, dialogs, setCurrentDialogId }) => {
   const [showModal, setShowModal] = useState(false);
   const history = useHistory();
   if (!dialogs.length || !currentDialogId) {
@@ -25,7 +26,10 @@ const Status = ({ currentDialogId, user, dialogs }) => {
     console.log(showModal);
     setShowModal(!showModal);
   };
-  if (!currentDialogObj) history.push('/');
+  if (!currentDialogObj) {
+    history.push('/');
+    setCurrentDialogId('');
+  }
   if (currentDialogObj.isGroup)
     return (
       <>
@@ -65,8 +69,11 @@ const Status = ({ currentDialogId, user, dialogs }) => {
     );
 };
 
-export default connect(({ dialogs, user }) => ({
-  dialogs: dialogs.items,
-  currentDialogId: dialogs.currentDialogId,
-  user: user.data,
-}))(Status);
+export default connect(
+  ({ dialogs, user }) => ({
+    dialogs: dialogs.items,
+    currentDialogId: dialogs.currentDialogId,
+    user: user.data,
+  }),
+  dialogsActions,
+)(Status);
