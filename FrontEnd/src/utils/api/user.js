@@ -6,6 +6,10 @@ export default {
   getMe: () => request(true).get('/api/users/me'),
   findUsersByEmail: (value) =>
     request(true).get('/api/users/email', { params: { email: value } }),
+  findUsersByNickname: (value) =>
+    request(true).get('/api/users/nickname', { params: { nickname: value } }),
+  findUsersByName: (value) =>
+    request(true).get('/api/users/name', { params: { name: value } }),
   logout: async () => {
     await request(true).delete('/api/auth');
   },

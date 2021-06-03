@@ -5,6 +5,7 @@ import { messagesActions } from '../redux/actions';
 import socket from '../core/socket';
 
 import { Messages as BaseMessages } from '../components';
+import { Empty } from 'antd';
 
 const Dialogs = ({
   currentDialogId,
@@ -15,6 +16,8 @@ const Dialogs = ({
   user,
   isLoading,
 }) => {
+  if (!currentDialogId) return <Empty description="Откройте диалог" />;
+
   const messagesRef = useRef(null);
 
   const onNewMessage = (data) => {

@@ -1,15 +1,18 @@
 import React from 'react';
-import { v4 as uuid } from 'uuid';
 import { generateAvatarFromHash } from '../../utils/helpers';
 import './Avatar.scss';
 
 const Avatar = ({ user }) => {
   if (user.photo) {
     return (
-      <img className="avatar" src={user.avatar} alt={`Avatar ${user.name}`} />
+      <img
+        className="avatar"
+        src={`http://localhost:3001/api/chats/${user.photo}`}
+        alt={`Avatar ${user.name}`}
+      />
     );
   } else {
-    const { color, colorLighten } = generateAvatarFromHash(uuid());
+    const { color, colorLighten } = generateAvatarFromHash(user.uuid);
     const firstChar = user.name[0].toUpperCase();
     return (
       <div

@@ -10,3 +10,5 @@ export { default as Status } from './Status';
 export { default as ChatInput } from './ChatInput';
 export { default as Messages } from './Messages';
 export { default as Sidebar } from './Sidebar';
+export { default as UserOptions } from './UserOptions';
+export { default as ChatInfo } from './ChatInfo';

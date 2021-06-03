@@ -36,6 +36,13 @@ export class UsersService {
     return res.rows.map((user) => this.splitUser(user));
   }
 
+  async findByName(name: string): Promise<UsersOutputDTO[]> {
+    const res = await this.pgService.useQuery(
+      `SELECT * FROM "Users" WHERE "name" LIKE '${name}%'`,
+    );
+    return res.rows.map((user) => this.splitUser(user));
+  }
+
   async findOneByEmailWithPassword(email: string): Promise<Users> {
     return await this.pgService.findOne({
       tableName: this.tableName,

@@ -14,6 +14,7 @@ import { Readable } from 'stream';
 import { ChatMembersService } from '../chat-members/chat-members.service';
 import ChatMembers from '../chat-members/interfaces/chat-members.entity';
 import { v4 as uuid } from 'uuid';
+import { WsSessionsService } from '../ws-sessions/ws-sessions.service';
 
 @Injectable()
 export class ChatsService {
@@ -22,6 +23,7 @@ export class ChatsService {
     private messagesService: MessagesService,
     private imageMinService: ImageMinService,
     private chatMembersService: ChatMembersService,
+    private wsSessionsService: WsSessionsService,
   ) {}
   private tableName = 'Chats';
 
@@ -43,16 +45,24 @@ export class ChatsService {
     }
 
     const name = this.imageMinService.editFileName(image);
-    await this.imageMinService.minimizeImage(
-      image,
-      destinationPath,
-      0.75,
-      name,
-    );
+    await this.imageMinService.minimizeImage(image, destinationPath, 75, name);
     await this.updateChat(chatUUID, { photo: name });
 
     if (chat.photo) {
       fs.unlinkSync(`./photos/${chat.photo}`);
+    }
+    const chatMembers = await this.chatMembersService.getChatMembers(
+      chat.chatUUID,
+    );
+    for (const cm of chatMembers) {
+      const wsSessions = this.wsSessionsService.findSessionsByUserEmail(
+        cm.email,
+      );
+      this.wsSessionsService.sendResponse(
+        wsSessions,
+        { chatUUID: chat.chatUUID, photo: name },
+        'UPDATE_CHAT_PHOTO',
+      );
     }
 
     return name;
@@ -71,7 +81,7 @@ export class ChatsService {
 
   async getPhoto(path: string): Promise<Readable> {
     return new Promise((resolve, reject) => {
-      fs.readFile('/photos/' + path, null, (err, data) => {
+      fs.readFile('./photos/' + path, null, (err, data) => {
         if (err) reject();
 
         const stream = new Readable();
@@ -105,7 +115,13 @@ export class ChatsService {
     });
   }
   // async updateChatPhoto(chatID: string, photo: File): Promise<void> {}
-
+  async checkOwner(email: string, chatUUID: string): Promise<boolean> {
+    const chat: Chats = await this.pgService.findOne({
+      tableName: this.tableName,
+      where: { chatUUID },
+    });
+    return email == chat.ownerEmail;
+  }
   async getChatWithMessagesAndMembers(
     chatUUID: string,
   ): Promise<ChatsWithMessagesAndMembers> {

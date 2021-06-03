@@ -6,9 +6,10 @@ import './Status.scss';
 
 const Status = ({
   // online,
+  onClick,
   fullname,
 }) => (
-  <div className="chat__dialog-header-center">
+  <div className="chat__dialog-header-center" onClick={onClick}>
     <b className="chat__dialog-header-username">{fullname}</b>
     <div className="chat__dialog-header-status">
       {/*<span className={classNames('status', { 'status--online': online })}>*/}

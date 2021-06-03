@@ -14,7 +14,7 @@ const Message = ({ user, text, date, isMe }) => {
     <div className={classNames('message', { 'message--isme': isMe })}>
       <div className="message__content">
         <div className="message__avatar">
-          <Avatar user={user} />
+          <Avatar user={{ ...user, uuid: user.email }} />
         </div>
         <div className="message__info">
           <div className="message__bubble">

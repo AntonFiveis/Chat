@@ -14,6 +14,8 @@ const Dialogs = ({
   addDialog,
   items,
   userEmail,
+  removeDialog,
+  changeDialogPhoto,
 }) => {
   const [inputValue, setValue] = useState('');
   const [filtred, setFiltredItems] = useState(items);
@@ -39,8 +41,16 @@ const Dialogs = ({
       addDialog(res);
       setFiltredItems([...filtred, res]);
     });
+    socket.on('REMOVE_CHAT', (res) => {
+      removeDialog(res);
+      const filt = [...filtred];
+      const index = filt.findIndex((c) => c.chatUUID === res.chatUUID);
+      filt.splice(index, 1);
+      setFiltredItems(filt);
+    });
     socket.on('CONNECT', (res) => setDialogs(res.chats));
     socket.on('ADD_MESSAGE', (res) => addMessageToDialog(res));
+    socket.on('UPDATE_CHAT_PHOTO', (res) => changeDialogPhoto(res));
     return () => {
       socket.removeListener('ADD_CHAT');
       socket.removeListener('CONNECT');

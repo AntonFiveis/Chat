@@ -47,6 +47,10 @@ export class UsersController {
   ): Promise<UsersOutputDTO[]> {
     return this.usersService.findByEmail(email);
   }
+  @Get('/email')
+  async getUsersByName(@Query('name') name: string): Promise<UsersOutputDTO[]> {
+    return this.usersService.findByName(name);
+  }
 
   @Get('/phone')
   async getUsersByPhone(

@@ -76,7 +76,6 @@ const SidebarContainer = ({ user }) => {
 
   const onSelectUser = (selUser) => {
     const index = selectedUsers.findIndex((u) => u.email === selUser.email);
-    setUsers(users);
     if (index === -1) {
       setSelectedUsers([...selectedUsers, selUser]);
     } else {

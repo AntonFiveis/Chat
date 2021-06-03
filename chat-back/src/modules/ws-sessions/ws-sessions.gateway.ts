@@ -24,6 +24,7 @@ import * as cookie from 'cookie';
 import { MessagesDTO } from '../messages/interfaces/messages.dto';
 import { MessagesService } from '../messages/messages.service';
 import { ChatsWithUsersDTO } from '../chats/interfaces/chats.dto';
+import { UnauthorizedException } from '@nestjs/common';
 
 const invalidTokenError = {
   error: {
@@ -85,12 +86,12 @@ export class WsSessionsGateway
       if (!session) throw new Error();
       const res = this.jwtService.verify(session.accessToken);
       const chatUUID = await this.chatsService.createChat(chatDTO, res.email);
-      for (const user of users) {
-        await this.chatMembersService.addUserToChat({
-          userEmail: user,
-          chatUUID,
-        });
-      }
+
+      await this.chatMembersService.addUsersToChat(
+        users.map((us) => {
+          return { chatUUID, userEmail: us };
+        }),
+      );
       const chatMembers = await this.chatMembersService.getChatMembers(
         chatUUID,
       );
@@ -110,9 +111,9 @@ export class WsSessionsGateway
     }
   }
 
-  @SubscribeMessage('ADD_CHAT_MEMBER')
+  @SubscribeMessage('ADD_CHAT_MEMBERS')
   async addChatMember(
-    @MessageBody() chatMembersDTO: ChatMembersDTO,
+    @MessageBody() chatMembersDTO: ChatMembersDTO[],
     @ConnectedSocket() socket: WebSocket,
   ): Promise<{ ok: boolean } | { error: ErrorType }> {
     const session = this.wsSessionsService.findSession(socket);
@@ -120,20 +121,45 @@ export class WsSessionsGateway
       if (!session) {
         throw new Error();
       }
-      this.jwtService.verify(session.accessToken);
-      await this.chatMembersService.addUserToChat(chatMembersDTO);
-      const newChatMemberSessions: WsSession[] = this.wsSessionsService.findSessionsByUserEmail(
-        chatMembersDTO.userEmail,
+      const res = this.jwtService.verify(session.accessToken);
+      if (
+        !(await this.chatsService.checkOwner(
+          res.email,
+          chatMembersDTO[0].chatUUID,
+        ))
+      ) {
+        throw new UnauthorizedException(`You don't have rights to do this`);
+      }
+      const chatWithMessages = await this.chatsService.getChatWithMessagesAndMembers(
+        chatMembersDTO[0].chatUUID,
       );
-      if (!newChatMemberSessions) return { ok: true };
-      const chatWithMessages = this.chatsService.getChatWithMessagesAndMembers(
-        chatMembersDTO.chatUUID,
+      await this.chatMembersService.addUsersToChat(chatMembersDTO);
+      for (const cm of chatMembersDTO) {
+        const newChatMemberSessions: WsSession[] = this.wsSessionsService.findSessionsByUserEmail(
+          cm.userEmail,
+        );
+        if (!newChatMemberSessions) return { ok: true };
+
+        this.wsSessionsService.sendResponse(
+          newChatMemberSessions,
+          chatWithMessages,
+          'ADD_CHAT',
+        );
+      }
+      const chatMembers = await this.chatMembersService.getChatMembers(
+        chatMembersDTO[0].chatUUID,
       );
-      this.wsSessionsService.sendResponse(
-        newChatMemberSessions,
-        chatWithMessages,
-        'ADD_CHAT_MEMBER',
-      );
+
+      for (const cm of chatMembers) {
+        const chatMembersSessions: WsSession[] = this.wsSessionsService.findSessionsByUserEmail(
+          cm.email,
+        );
+        this.wsSessionsService.sendResponse(
+          chatMembersSessions,
+          chatMembers,
+          'SET_CHAT_MEMBERS',
+        );
+      }
       return { ok: true };
     } catch (e) {
       return invalidTokenError;
@@ -150,7 +176,15 @@ export class WsSessionsGateway
       if (!session) {
         throw new Error();
       }
-      this.jwtService.verify(session.accessToken);
+      const res = this.jwtService.verify(session.accessToken);
+      if (
+        !(await this.chatsService.checkOwner(
+          res.email,
+          chatMembersDTO.chatUUID,
+        ))
+      ) {
+        throw new UnauthorizedException(`You don't have rights to do this`);
+      }
       await this.chatMembersService.removeUserFromChat(chatMembersDTO);
       const chatMemberSessions: WsSession[] = this.wsSessionsService.findSessionsByUserEmail(
         chatMembersDTO.userEmail,
@@ -159,9 +193,21 @@ export class WsSessionsGateway
       this.wsSessionsService.sendResponse(
         chatMemberSessions,
         { chatUUID: chatMembersDTO.chatUUID },
-        'REMOVE_CHAT_MEMBER',
+        'REMOVE_CHAT',
       );
-
+      const chatMembers = await this.chatMembersService.getChatMembers(
+        chatMembersDTO.chatUUID,
+      );
+      for (const cm of chatMembers) {
+        const chatMembersSessions: WsSession[] = this.wsSessionsService.findSessionsByUserEmail(
+          cm.email,
+        );
+        this.wsSessionsService.sendResponse(
+          chatMembersSessions,
+          chatMembers,
+          'SET_CHAT_MEMBERS',
+        );
+      }
       return { ok: true };
     } catch (e) {
       return invalidTokenError;

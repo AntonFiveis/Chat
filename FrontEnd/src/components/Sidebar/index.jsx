@@ -4,53 +4,15 @@ import React from 'react';
 import { Button, Modal, Select, Input, Form } from 'antd';
 import { TeamOutlined, FormOutlined } from '@ant-design/icons';
 import { Dialogs } from '../../containers';
+import { UserOptions } from '../index';
 
 const { Option } = Select;
 const { TextArea } = Input;
-
-const UserOptions = ({ users, selectedUsers, onSelectUser, user }) => {
-  return (
-    <>
-      {selectedUsers.length
-        ? selectedUsers.map((us) => (
-            <div key={us.email}>
-              <p>
-                {us.name}{' '}
-                <input
-                  type={'checkbox'}
-                  checked
-                  onChange={() => onSelectUser(us)}
-                />
-              </p>
-            </div>
-          ))
-        : null}
-
-      {users.length
-        ? users.map((us) =>
-            !selectedUsers.find((u) => u.email === us.email) ? (
-              <div key={us.email}>
-                <p>
-                  {us.name}
-                  <input
-                    type={'checkbox'}
-                    checked={false}
-                    onChange={() => onSelectUser(us)}
-                  />
-                </p>
-              </div>
-            ) : null,
-          )
-        : null}
-    </>
-  );
-};
 
 const Sidebar = ({
   user,
   visible,
   inputValue,
-  messageText,
   selectedUsers,
   isLoading,
   users,
@@ -58,7 +20,6 @@ const Sidebar = ({
   onClose,
   onChangeInput,
   onSelectUser,
-  onChangeTextArea,
   onModalOk,
 }) => {
   return (

@@ -31,11 +31,13 @@ export class ChatMembersService {
     });
   }
 
-  async addUserToChat({ userEmail, chatUUID }: ChatMembersDTO): Promise<void> {
-    await this.pgService.create({
-      tableName: this.tableName,
-      values: [{ userEmail, chatUUID }],
-    });
+  async addUsersToChat(chatMembersDTO: ChatMembersDTO[]): Promise<void> {
+    for (const cm of chatMembersDTO) {
+      await this.pgService.create({
+        tableName: this.tableName,
+        values: [{ ...cm }],
+      });
+    }
   }
 
   async removeUserFromChat({

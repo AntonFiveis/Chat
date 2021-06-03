@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ChatsService } from './chats.service';
 import { ChatsController } from './chats.controller';
 import { MulterModule } from '@nestjs/platform-express';
@@ -6,6 +6,8 @@ import { MessagesModule } from '../messages/messages.module';
 import { MessagesService } from '../messages/messages.service';
 import { ChatMembersModule } from '../chat-members/chat-members.module';
 import { ChatMembersService } from '../chat-members/chat-members.service';
+import { WsSessionsModule } from '../ws-sessions/ws-sessions.module';
+import { WsSessionsService } from '../ws-sessions/ws-sessions.service';
 
 @Module({
   imports: [
@@ -16,8 +18,14 @@ import { ChatMembersService } from '../chat-members/chat-members.service';
     }),
     MessagesModule,
     ChatMembersModule,
+    forwardRef(() => WsSessionsModule),
   ],
-  providers: [ChatsService, MessagesService, ChatMembersService],
+  providers: [
+    ChatsService,
+    MessagesService,
+    ChatMembersService,
+    WsSessionsService,
+  ],
   controllers: [ChatsController],
   exports: [],
 })
