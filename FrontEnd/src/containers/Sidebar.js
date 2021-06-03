@@ -9,7 +9,7 @@ import { Sidebar } from '../components';
 const SidebarContainer = ({ user }) => {
   const [visible, setVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [messageText, setMessageText] = useState('');
+  const [chatName, setChatName] = useState('');
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -42,11 +42,11 @@ const SidebarContainer = ({ user }) => {
   };
 
   const onAddDialog = () => {
-    console.log('createDialog');
     const usersEmails = selectedUsers.map((us) => us.email);
+
     socket
       .call('ADD_CHAT', {
-        chatName: user.name,
+        chatName: chatName || 'NewChat',
         isGroup: true,
         users: [...usersEmails, user.email],
       })
@@ -71,7 +71,7 @@ const SidebarContainer = ({ user }) => {
   };
 
   const onChangeTextArea = (e) => {
-    setMessageText(e.target.value);
+    setChatName(e.target.value);
   };
 
   const onSelectUser = (selUser) => {
@@ -99,7 +99,7 @@ const SidebarContainer = ({ user }) => {
       onSelectUser={onSelectUser}
       onModalOk={onAddDialog}
       onChangeTextArea={onChangeTextArea}
-      messageText={messageText}
+      chatName={chatName}
       selectedUsers={selectedUsers}
       users={users}
     />

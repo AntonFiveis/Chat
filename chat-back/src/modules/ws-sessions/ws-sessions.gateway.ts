@@ -162,7 +162,7 @@ export class WsSessionsGateway
         );
         this.wsSessionsService.sendResponse(
           chatMembersSessions,
-          chatMembers,
+          { chatMembers: chatMembers },
           'SET_CHAT_MEMBERS',
         );
       }
@@ -210,7 +210,7 @@ export class WsSessionsGateway
         );
         this.wsSessionsService.sendResponse(
           chatMembersSessions,
-          chatMembers,
+          { chatMembers: chatMembers },
           'SET_CHAT_MEMBERS',
         );
       }

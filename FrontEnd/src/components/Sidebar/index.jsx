@@ -21,6 +21,8 @@ const Sidebar = ({
   onChangeInput,
   onSelectUser,
   onModalOk,
+  chatName,
+  onChangeTextArea,
 }) => {
   return (
     <div className="chat__sidebar">
@@ -73,14 +75,14 @@ const Sidebar = ({
           </Form.Item>
 
           {/*{selectedUserId && (*/}
-          {/*  <Form.Item label="Введите текст сообщения">*/}
-          {/*    <TextArea*/}
-          {/*      placeholder=""*/}
-          {/*      autoSize={{ minRows: 3, maxRows: 10 }}*/}
-          {/*      onChange={onChangeTextArea}*/}
-          {/*      value={messageText}*/}
-          {/*    />*/}
-          {/*  </Form.Item>*/}
+          <Form.Item label="Введите название чата">
+            <TextArea
+              placeholder=""
+              autoSize={{ minRows: 3, maxRows: 10 }}
+              onChange={onChangeTextArea}
+              value={chatName}
+            />
+          </Form.Item>
           {/*)}*/}
         </Form>
       </Modal>

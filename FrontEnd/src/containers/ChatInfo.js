@@ -24,7 +24,8 @@ const ChatInfo = ({
       changeDialogPhoto(res);
     });
     socket.on('SET_CHAT_MEMBERS', (res) => {
-      setChatMembers(res);
+      console.log(res);
+      setChatMembers(res.chatMembers);
     });
   }, []);
   const onToggleEdit = () => {

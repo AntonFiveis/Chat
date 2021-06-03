@@ -34,6 +34,7 @@ const actions = {
   },
   setChatMembers: (chatMembers) => (dispatch, getState) => {
     const { chats, chat } = splitWithChat(getState);
+    console.log(chatMembers);
     dispatch(actions.setDialogs([...chats, { ...chat, chatMembers }]));
   },
   removeDialog: (chatUUID) => (dispatch, getState) => {

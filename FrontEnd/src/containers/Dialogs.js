@@ -39,13 +39,13 @@ const Dialogs = ({
 
   useEffect(() => {
     socket.on('ADD_CHAT', (res) => {
-      console.log(res);
       addDialog(res);
       setFiltredItems([...filtred, res]);
     });
     socket.on('REMOVE_CHAT', (res) => {
       removeDialog(res);
       history.push('/');
+      setCurrentDialogId('');
       const filt = items;
       const index = filt.findIndex((c) => c.chatUUID === res.chatUUID);
       filt.splice(index, 1);

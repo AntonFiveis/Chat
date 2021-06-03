@@ -1,6 +1,6 @@
 import { Avatar, Button, UserOptions } from '../index';
 import React from 'react';
-
+import './ChatInfo.scss';
 const ChatInfo = ({
   editMode,
   chatUUID,
@@ -9,7 +9,7 @@ const ChatInfo = ({
   value,
   isMe,
   chatMembers = [],
-  onNameChange,
+  // onNameChange,
   onSelectUser,
   users = [],
   selectedUsers,
@@ -21,7 +21,7 @@ const ChatInfo = ({
   onToggleEdit,
 }) => {
   return (
-    <div>
+    <div className={'chatInfo'}>
       {isMe ? <Button onClick={onToggleEdit}>Edit</Button> : null}
       <Avatar user={{ photo, name: chatName, uuid: chatUUID }} />
       {editMode ? (
@@ -35,27 +35,33 @@ const ChatInfo = ({
           <Button onClick={changeChatPhoto}>Submit</Button>
         </div>
       ) : null}
-      {editMode ? (
-        <input
-          onChange={({ target }) => onNameChange(target.value)}
-          value={chatName}
-        />
-      ) : (
-        <p>{chatName}</p>
-      )}
+      {/*{editMode ? (*/}
+      {/*  <>*/}
+      {/*    <label htmlFor="chatName">Input new member email:</label>*/}
+      {/*    <input*/}
+      {/*      id={'chatName'}*/}
+      {/*      onChange={({ target }) => onNameChange(target.value)}*/}
+      {/*      value={chatName}*/}
+      {/*    />*/}
+      {/*  </>*/}
+      {/*) : (*/}
+      <div className={'chatName'}>{chatName}</div>
+      {/*)}*/}
       {chatMembers.map((cm) => (
-        <p key={cm.email}>
-          {cm.name}
+        <div key={cm.email} className={'chatMember'}>
+          <div>{cm.name}</div>
           {editMode ? (
-            <Button
-              onClick={() => {
-                onMemberRemove(cm.email);
-              }}
-            >
-              Remove
-            </Button>
+            <div>
+              <Button
+                onClick={() => {
+                  onMemberRemove(cm.email);
+                }}
+              >
+                Remove
+              </Button>
+            </div>
           ) : null}
-        </p>
+        </div>
       ))}
 
       {editMode ? (
