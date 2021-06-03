@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-
+import { useHistory } from 'react-router-dom';
 import { dialogsActions } from '../redux/actions';
 import socket from '../core/socket';
 
@@ -20,6 +20,7 @@ const Dialogs = ({
   const [inputValue, setValue] = useState('');
   const [filtred, setFiltredItems] = useState(items);
 
+  const history = useHistory();
   const onChangeInput = (value = '') => {
     setFiltredItems(
       items.filter(
@@ -38,12 +39,14 @@ const Dialogs = ({
 
   useEffect(() => {
     socket.on('ADD_CHAT', (res) => {
+      console.log(res);
       addDialog(res);
       setFiltredItems([...filtred, res]);
     });
     socket.on('REMOVE_CHAT', (res) => {
       removeDialog(res);
-      const filt = [...filtred];
+      history.push('/');
+      const filt = items;
       const index = filt.findIndex((c) => c.chatUUID === res.chatUUID);
       filt.splice(index, 1);
       setFiltredItems(filt);

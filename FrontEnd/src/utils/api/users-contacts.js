@@ -1,8 +1,8 @@
-import { request } from '../../core';
+import { instance } from '../../core';
 
 export default {
   addFriend: async (friendUserEmail) => {
-    await request(true).post(
+    await instance.post(
       '/api/users-contacts',
       {},
       {
@@ -11,7 +11,6 @@ export default {
     );
   },
   getMyFriendList: async () => {
-    const res = await request(true).get('/api/users-contacts');
-    return res.data;
+    return await instance.get('/api/users-contacts');
   },
 };

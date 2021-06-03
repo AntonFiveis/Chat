@@ -20,13 +20,12 @@ const ChatInfo = ({
   onChangeValue,
   onToggleEdit,
 }) => {
-  console.log(isMe);
   return (
     <div>
       {isMe ? <Button onClick={onToggleEdit}>Edit</Button> : null}
       <Avatar user={{ photo, name: chatName, uuid: chatUUID }} />
       {editMode ? (
-        <div>
+        <div className={'fileUpload'}>
           <label htmlFor="file">Choose images to upload (PNG, JPG)</label>
           <input
             type="file"
@@ -49,9 +48,8 @@ const ChatInfo = ({
           {cm.name}
           {editMode ? (
             <Button
-              email={cm.email}
-              onClick={({ target }) => {
-                onMemberRemove(target.email);
+              onClick={() => {
+                onMemberRemove(cm.email);
               }}
             >
               Remove

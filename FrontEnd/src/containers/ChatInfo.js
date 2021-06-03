@@ -23,7 +23,7 @@ const ChatInfo = ({
     socket.on('CHAT_EDIT', (res) => {
       changeDialogPhoto(res);
     });
-    socket.on('SET_CHAT_MEMBER', (res) => {
+    socket.on('SET_CHAT_MEMBERS', (res) => {
       setChatMembers(res);
     });
   }, []);
@@ -40,7 +40,7 @@ const ChatInfo = ({
   };
   const onSearch = async (val) => {
     setValue(val);
-    const users = await userApi.findUsersByEmail(val);
+    const { data: users } = await userApi.findUsersByEmail(val);
     const userIndex = users.findIndex((u) => u.email == user.email);
     users.splice(userIndex, 1);
     setUsers(users);
@@ -67,7 +67,6 @@ const ChatInfo = ({
       chatUUID: currentDialogId,
     });
   };
-  console.log(user.email);
   return (
     <BaseChatInfo
       editMode={editMode}

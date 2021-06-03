@@ -101,7 +101,13 @@ export class WsSessionsGateway
         );
         this.wsSessionsService.sendResponse(
           userSessions,
-          { ...chatDTO, chatUUID, messages: [], chatMembers },
+          {
+            ...chatDTO,
+            chatUUID,
+            messages: [],
+            chatMembers,
+            ownerEmail: res.email,
+          },
           'ADD_CHAT',
         );
       }

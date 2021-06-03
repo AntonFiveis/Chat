@@ -8,8 +8,8 @@ import { MessagesService } from '../messages/messages.service';
 import { ChatMembersModule } from '../chat-members/chat-members.module';
 import { ChatMembersService } from '../chat-members/chat-members.service';
 import { JwtModule } from '@nestjs/jwt';
-import {UsersModule} from "../users/users.module";
-import {UsersService} from "../users/users.service";
+import { UsersModule } from '../users/users.module';
+import { UsersService } from '../users/users.service';
 
 @Module({
   imports: [
@@ -20,7 +20,7 @@ import {UsersService} from "../users/users.service";
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '30m' },
     }),
-      UsersModule,
+    UsersModule,
   ],
   providers: [
     WsSessionsService,
@@ -28,7 +28,7 @@ import {UsersService} from "../users/users.service";
     ChatsService,
     MessagesService,
     ChatMembersService,
-      UsersService,
+    UsersService,
   ],
 })
 export class WsSessionsModule {}
