@@ -9,7 +9,8 @@ instance.interceptors.request.use(
     req.headers.authorization =
       'Bearer ' + window.localStorage.getItem('accessToken');
     if (
-      Number(window.localStorage.getItem('finishDate')) < Number(new Date())
+      Number(window.localStorage.getItem('finishDate')) < Number(new Date()) &&
+      window.localStorage.getItem('accessToken')
     ) {
       return userApi
         .refresh(window.localStorage.getItem('fingerprint'))
