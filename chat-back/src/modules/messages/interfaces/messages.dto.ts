@@ -1,5 +1,6 @@
 export interface MessagesDTO {
-  text: string;
+  text?: string;
   userEmail: string;
   chatUUID: string;
+  photo?: string;
 }

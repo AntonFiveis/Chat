@@ -30,5 +30,6 @@ import { UsersService } from '../users/users.service';
     ChatMembersService,
     UsersService,
   ],
+  exports:[ChatMembersModule, ChatsModule, WsSessionsService]
 })
 export class WsSessionsModule {}
