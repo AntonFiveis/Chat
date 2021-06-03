@@ -1,7 +1,10 @@
 module.exports = {
     "env": {
-        "es2021": true,
+        "node": true,
+        // todo: why node in front app?
         "browser": true,
+        "es6": true,
+        "commonjs": true
     },
     "extends": [
         "eslint:recommended",
@@ -21,6 +24,7 @@ module.exports = {
         "sonarjs",
     ],
     "rules": {
+        "react/prop-types": "off"
     },
     "ignorePatterns": [".eslintrc.js"]
 };
